@@ -97,21 +97,15 @@ var command = function(name, opts, cb) {
           availableOptionsText(flags);
     },
     singleLineHelp: "  " + name + " " + _.pluck(args, "helpText").join(' ') + "\t\t\t\t" + description,
-    getValue: function(cliArgs, cliOpts) {
-      var parsedArgs = _.map(parsers.withIndexes(args), function(arg) {
-          return arg[1].getValue(arg[0], cliArgs);
-      });
+    getValue: function(cliArgs, cliOpts, globalOpts) {
+      var parsedOptions = parsers.parseOptions(flags, cliOpts);
+      var parsedArgs = parsers.parseArgs(args, cliArgs);
+      var globalOptions = globalOpts || {};
 
-      var parsedOptions = _.map(flags, function(option) {
-          return [option.names[0], option.getValue(cliOpts)];
-      });
-
-      if(parsers.areValid(parsedArgs) && parsers.areValidOptions(parsedOptions)) {
+      if(parsers.isValid(parsedArgs) && parsers.isValid(parsedOptions)) {
           cb({
-            args: _.pluck(parsedArgs, "success"),
-            options: _.object(_.map(parsedOptions, function(option) {
-                return [option[0], option[1].success];
-            }))
+            args: parsedArgs.success,
+            options: _.extend(parsedOptions.success, globalOpts)
           });
       } else {
         return { errors: {} };
@@ -120,26 +114,40 @@ var command = function(name, opts, cb) {
   };
 };
 
+var getProcessName = function(args) {
+  if(args[0] === 'node') {
+    return _.take(args, 2).join(" ");
+  } else {
+    return args[0];
+  }
+};
 
 var cli = function(opts) {
   var options = opts || {};
-  var name = options.name;
+  var name = options.name || getProcessName(process.argv);
   var flags = options.options || [];
   var commands = options.commands || [];
   return {
     getValue: function(cliArgs, cliOpts) {
-      var matchedCommand = _.find(commands, function(command) {
-        return command.name === cliArgs[0];
-      });
+      var parsedOptions = parsers.parseOptions(flags, cliOpts);
 
-      if(matchedCommand) {
-          var commandResult = matchedCommand.getValue(_.drop(cliArgs, 1), cliOpts);
+      if(parsers.isValid(parsedOptions)) {
+        var matchedCommand = _.find(commands, function(command) {
+          return command.name === cliArgs[0];
+        });
+
+        if(matchedCommand) {
+          var commandResult = matchedCommand.getValue(_.drop(cliArgs, 1), cliOpts, parsedOptions.success);
           if(parsers.isError(commandResult)) {
             console.log(matchedCommand.helpText(name));
           }
+        } else {
+          console.log(this.helpText());
+        }
       } else {
         console.log(this.helpText());
       }
+
     },
     helpText: function() {
       return "Name + description\n\n" +

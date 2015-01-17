@@ -51,5 +51,33 @@ module.exports = {
 
   areValidOptions: function(xs) {
       return _.every(xs, this.isValidOption);
+  },
+
+  parseArgs: function(args, cliArgs) {
+    var parsedArgs = _.map(this.withIndexes(args), function(arg) {
+      return arg[1].getValue(arg[0], cliArgs);
+    });
+
+    if(this.areValid(parsedArgs)) {
+      return { success: _.pluck(parsedArgs, "success") };
+    } else {
+      return { errors: ""};
+    }
+  },
+
+  parseOptions: function(options, cliOpts) {
+    var parsedOptions = _.map(options, function(option) {
+      return [option.names[0], option.getValue(cliOpts)];
+    });
+
+    if(this.areValidOptions(parsedOptions)) {
+      return {
+        success: _.object(_.map(parsedOptions, function(option) {
+          return [option[0], option[1].success];
+        }))
+      };
+    } else {
+      return { errors: ""};
+    }
   }
 };

@@ -20,6 +20,9 @@ var addModule = function(v) {
 
 var testCli = optparse.cli({
   name: "testCli",
+  options: [
+    optparse.flag("help", { aliases: ["h", "?"], helpT: "display help" })
+  ],
   commands: [
 
     optparse.command(
