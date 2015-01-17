@@ -43,7 +43,7 @@ var cliParser = optparse.cli({
 optparse.parseValues(testCli);
 ```
 
-Where `echoModule` and `addModule` are callbacks taking a `{ args: [], opts: {} }` parameter.
+Where `echoModule` and `addModule` are callbacks taking a `{ args: […], options: {…} }` parameter.
 
 ### Generated output
 
@@ -161,6 +161,6 @@ Where `name` is the name of the command , and `opts` can contain
    value: `[]`
 
 `cb` is a callback which is called when the command match (if no subcommand
-match). It is called with a `{ args: [], opts: {}}` object. `opts` contains
+match). It is called with a `{ args: […], options: {…}}` object. `opts` contains
 both the options of the command and the options of the parent commands.
 
