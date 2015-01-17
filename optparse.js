@@ -86,6 +86,8 @@ var command = function(name, opts, cb) {
   var description = options.description || "";
   var args = options.args || [];
   var flags = options.options || [];
+  var commands = options.commands || [];
+  var action = typeof cb !== 'undefined' ? cb : null;
   return {
     name: name,
     args: args,
@@ -98,15 +100,31 @@ var command = function(name, opts, cb) {
     },
     singleLineHelp: "  " + name + " " + _.pluck(args, "helpText").join(' ') + "\t\t\t\t" + description,
     getValue: function(cliArgs, cliOpts, globalOpts) {
-      var parsedOptions = parsers.parseOptions(flags, cliOpts);
-      var parsedArgs = parsers.parseArgs(args, cliArgs);
       var globalOptions = globalOpts || {};
+      var parsedOptions = parsers.parseOptions(flags, cliOpts);
 
-      if(parsers.isValid(parsedArgs) && parsers.isValid(parsedOptions)) {
-          cb({
-            args: parsedArgs.success,
-            options: _.extend(parsedOptions.success, globalOpts)
-          });
+      if(parsers.isValid(parsedOptions)) {
+        var matchedCommand = _.find(commands, function(command) {
+          return command.name === cliArgs[0];
+        });
+
+        if(matchedCommand) {
+          var commandResult = matchedCommand.getValue(_.drop(cliArgs, 1), cliOpts, parsedOptions.success);
+          if(parsers.isError(commandResult)) {
+            console.log(matchedCommand.helpText(name));
+          }
+        } else {
+          var parsedArgs = parsers.parseArgs(args, cliArgs);
+
+          if(action !== null && parsers.isValid(parsedArgs)) {
+              action({
+                args: parsedArgs.success,
+                options: _.extend(parsedOptions.success, globalOpts)
+              });
+          } else {
+            console.log(this.helpText());
+          }
+        }
       } else {
         return { errors: {} };
       }
@@ -122,11 +140,13 @@ var getProcessName = function(args) {
   }
 };
 
-var cli = function(opts) {
+var cli = function(opts, cb) {
   var options = opts || {};
   var name = options.name || getProcessName(process.argv);
   var flags = options.options || [];
   var commands = options.commands || [];
+  var args = options.args || [];
+  var action = typeof cb !== 'undefined' ? cb : null;
   return {
     getValue: function(cliArgs, cliOpts) {
       var parsedOptions = parsers.parseOptions(flags, cliOpts);
@@ -142,7 +162,16 @@ var cli = function(opts) {
             console.log(matchedCommand.helpText(name));
           }
         } else {
-          console.log(this.helpText());
+          var parsedArgs = parsers.parseArgs(args, cliArgs);
+
+          if(action !== null && parsers.isValid(parsedArgs)) {
+              action({
+                args: parsedArgs.success,
+                options: parsedOptions.success
+              });
+          } else {
+            console.log(this.helpText());
+          }
         }
       } else {
         console.log(this.helpText());
