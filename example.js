@@ -29,7 +29,7 @@ var testCli = optparse.cli({
       "echo",
       { description: "display the given value",
         args: [ optparse.argument("value", { helpT: "simple value" })],
-        options: [ optparse.flag("reverse") ]
+        options: [ optparse.flag("reverse", { aliases: ["r"], helpT: "reverse the value"}) ]
       },
       echoModule),
 
