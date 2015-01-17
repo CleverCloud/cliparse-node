@@ -143,6 +143,7 @@ var getProcessName = function(args) {
 var cli = function(opts, cb) {
   var options = opts || {};
   var name = options.name || getProcessName(process.argv);
+  var description = options.description || "";
   var flags = options.options || [];
   var commands = options.commands || [];
   var args = options.args || [];
@@ -170,20 +171,24 @@ var cli = function(opts, cb) {
                 options: parsedOptions.success
               });
           } else {
-            console.log(this.helpText());
+            console.log(this.helpText);
           }
         }
       } else {
-        console.log(this.helpText());
+        console.log(this.helpText);
       }
 
     },
     helpText: function() {
-      return "Name + description\n\n" +
-          availableOptionsText(flags) +
+      var output = name;
+      if(description) output += ": " + description;
+      output += '\n\n';
+      output += availableOptionsText(flags) +
           "Available commands: \n" +
           _.pluck(commands, "singleLineHelp").join('\n');
-    }
+
+      return output;
+    }()
   };
 };
 

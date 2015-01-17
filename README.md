@@ -12,6 +12,7 @@ options values (types supported out of the box: `int`, `bool`, `string`).
 
 var cliParser = optparse.cli({
   name: "my-executable",
+  description: "Simple CLI written for the sake of the example",
   options: [
     optparse.flag("help", { aliases: ["h", "?"], helpT: "display help" })
   ],
@@ -50,7 +51,7 @@ Where `echoModule` and `addModule` are callbacks taking a `{ args: [], opts: {} 
 
 ```
 $ my-executable
-Name + description
+my-executable: Simple CLI written for the sake of the example.
 
 Available options:
 --help, -h, -?                          display help
@@ -89,6 +90,7 @@ cli(opts, cb);
 Where opts can contain
 
  - `name`: the name of the executable (if not provided, `process.argv` is used)
+ - `description`: a one-line description of the executable
  - `options`: array of top-level options (constructed with `option` or `flag`). Default
    value: `[]`.
  - `commands`: array of commands (constructed with `command`). Default value: `[]`
