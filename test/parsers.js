@@ -11,7 +11,7 @@ test('stringParser is noop for strings', function(t) {
     var result = parsers.stringParser(string);
 
     t.plan(1);
-    t.same(result, { success: string });
+    t.same(result, { success: string }, 'dummy string');
 });
 
 test('stringParser turns numbers into strings', function(t) {
@@ -40,6 +40,31 @@ test('stringParser turns booleans into strings', function(t) {
 });
 
 
+/*
+ * intParser
+ */
 
+test('intParser is noop for ints', function(t) {
+    var input = 42;
+    var result = parsers.intParser(input);
+
+    t.plan(1);
+    t.same(result, { success: input }, 'int');
+});
+
+/*
+ * booleanParser
+ */
+
+test('booleanParser is noop for booleans', function(t) {
+    var input = true;
+    var input2 = false;
+    var result = parsers.booleanParser(input);
+    var result2 = parsers.booleanParser(input2);
+
+    t.plan(2);
+    t.same(result, { success: input }, 'true');
+    t.same(result2, { success: input2 }, 'false');
+});
 
 
