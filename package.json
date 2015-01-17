@@ -7,9 +7,11 @@
     "lodash": "^2.4.1",
     "minimist": "^1.1.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "tape": "^3.2.0"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node test/parsers.js"
   },
   "author": "",
   "license": "MIT"
