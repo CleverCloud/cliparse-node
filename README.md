@@ -101,17 +101,66 @@ If your application is not solely made of commands, you can pass an action callb
 
 ### `option`
 
-ToDo
+```javascript
+option(name, opts);
+```
+
+Where name is the name of the flag, and opts can contain
+
+ - `aliases`: array of other names (the shorthand name for instance. Default
+   value: `[]`
+ - `metavar`: the name of the value of the option (if applicable: for flags,
+  see below)
+ - `parser`: the parser used to parse the value. Default value: `stringParser`
+   which is a noop parser returning the string.
+ - `helpT`: a single-line description of what the option is about. Default
+   value: the empty string.
+ - `defaultValue`: value used if the option is not given any value
+
 
 ### `flag`
 
-ToDo
+Shorthand for flags (ie options with boolean values, defaulting to `false`)
+
+```javascript
+flag(name, opts);
+```
+
+Acts like `option`, with different defaults:
+
+ - `parser` defaults to `booleanParser`, which parses boolean values
+ - `defaultValue` defaults to `false`
 
 ### `argument`
 
-ToDo
+```javascript
+argument(name, opts);
+```
+
+Where opts can contain
+
+ - `parser`: ther parser used to parse the value of the argument. Default
+   value: `stringParser`
+ - `help`: a single-line description of what the argument is about.
+ - `defaultValue`: value used if the argument is not given any value
+
 
 ### `command`
 
-ToDo
+```javascript
+command(name, opts, cb);
+```
+
+Where `name` is the name of the command , and `opts` can contain
+
+ - `description`: a single line description of the command
+ - `args`: array of arguments (constructed with `argument`). Default value: `[]`
+ - `options`: array of options (constructed with `option`). Default value:
+   `[]`
+ - `commands`: array of subcommands (constructed with `command`). Default
+   value: `[]`
+
+`cb` is a callback which is called when the command match (if no subcommand
+match). It is called with a `{ args: [], opts: {}}` object. `opts` contains
+both the options of the command and the options of the parent commands.
 
