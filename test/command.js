@@ -1,7 +1,7 @@
 var test = require("tape");
 
-var optparse = require("../optparse.js");
-var parsers = require("../parsers.js");
+var cliparse = require("../src/cliparse.js");
+var parsers = require("../src/parsers.js");
 
 /*
  * option
@@ -9,15 +9,15 @@ var parsers = require("../parsers.js");
 
 test('default command use case', function(t) {
     t.plan(1);
-    var command = optparse.command('name', {}, function(vs) { t.pass("no args, no options"); });
+    var command = cliparse.command('name', {}, function(vs) { t.pass("no args, no options"); });
     command.getValue([], {});
 });
 
 test('command with one flag', function(t) {
     t.plan(2);
-    var option = optparse.flag('test');
+    var option = cliparse.flag('test');
     var mkCommand = function(cb) {
-        return optparse.command( 'name', { options: [option] }, cb);
+        return cliparse.command( 'name', { options: [option] }, cb);
     };
 
     mkCommand(function(vs) { t.isEqual(vs.options.test, true, 'option present'); }).getValue([], { test: true });
@@ -26,9 +26,9 @@ test('command with one flag', function(t) {
 
 test('command with one option without default', function(t) {
     t.plan(2);
-    var option = optparse.option('test');
+    var option = cliparse.option('test');
     var mkCommand = function(cb) {
-        return optparse.command( 'name', { options: [option] }, cb);
+        return cliparse.command( 'name', { options: [option] }, cb);
     };
 
     mkCommand(function(vs) { t.isEqual(vs.options.test, 'value', 'option present'); }).getValue([], { test: 'value' });
@@ -38,9 +38,9 @@ test('command with one option without default', function(t) {
 
 test('command with arguments', function(t) {
     t.plan(1);
-    var argument = optparse.argument('test');
+    var argument = cliparse.argument('test');
     var mkCommand = function(cb) {
-        return optparse.command('name', { args: [argument]}, cb);
+        return cliparse.command('name', { args: [argument]}, cb);
     };
 
     mkCommand(function(vs) { t.same(vs.args, ['value'], 'argument present'); }).getValue(['value'], {});

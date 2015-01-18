@@ -1,4 +1,4 @@
-# CLI parse for node
+# Declarative CLI parsing for node apps
 
 This is a library designed to express command-line options. It supports
 commands and subcommands (at an arbitrary depth), automatically generates help
@@ -9,28 +9,30 @@ options values (types supported out of the box: `int`, `bool`, `string`).
 ## Enough talk, show me the code
 
 ```javascript
+var cliparse = require("cliparse");
+var parsers = criparse.parsers;
 
-var cliParser = optparse.cli({
+var cliParser = cliparse.cli({
   name: "my-executable",
   description: "Simple CLI written for the sake of the example",
   options: [
-    optparse.flag("help", { aliases: ["h", "?"], helpT: "display help" })
+    cliparse.flag("help", { aliases: ["h", "?"], helpT: "display help" })
   ],
   commands: [
 
-    optparse.command(
+    cliparse.command(
       "echo",
       { description: "display the given value",
-        args: [ optparse.argument("value", { helpT: "simple value" })],
-        options: [ optparse.flag("reverse", { aliases: ["r"], helpT: "reverse the value"}) ]
+        args: [ cliparse.argument("value", { helpT: "simple value" })],
+        options: [ cliparse.flag("reverse", { aliases: ["r"], helpT: "reverse the value"}) ]
       },
       echoModule),
 
-    optparse.command(
+    cliparse.command(
       "add2",
       { description: "add 2 to the given integer and display the result",
         args: [
-          optparse.argument("int",
+          cliparse.argument("int",
             { defaultValue: 0,
               parser: parsers.intParser,
               helpT: "int to add 2 to" })
@@ -40,10 +42,10 @@ var cliParser = optparse.cli({
   ]
 });
 
-optparse.parseValues(testCli);
+cliparse.parseValues(testCli);
 ```
 
-Where `echoModule` and `addModule` are callbacks taking a `{ args: […], options: {…} }` parameter.
+Where `echoModule` and `addModule` are callbacks taking a `{ args: ['value'], options: {key: 'value'} }` parameter.
 
 ### Generated output
 
@@ -161,6 +163,6 @@ Where `name` is the name of the command , and `opts` can contain
    value: `[]`
 
 `cb` is a callback which is called when the command match (if no subcommand
-match). It is called with a `{ args: […], options: {…}}` object. `opts` contains
+match). It is called with a `{ args: ['value'], options: {key: 'value'}}` object. `opts` contains
 both the options of the command and the options of the parent commands.
 

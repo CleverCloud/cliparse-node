@@ -1,14 +1,14 @@
 var test = require("tape");
 
-var optparse = require("../optparse.js");
-var parsers = require("../parsers.js");
+var cliparse = require("../src/cliparse.js");
+var parsers = require("../src/parsers.js");
 
 /*
  * option
  */
 
 test('default argument use case', function(t) {
-    var arg = optparse.argument('name');
+    var arg = cliparse.argument('name');
     var result = arg.getValue(0, ['value']);
 
     t.plan(1);
@@ -16,7 +16,7 @@ test('default argument use case', function(t) {
 });
 
 test('argument default value', function(t) {
-    var arg = optparse.argument('name', { defaultValue: 'value' });
+    var arg = cliparse.argument('name', { defaultValue: 'value' });
     var result = arg.getValue(0, []);
 
     t.plan(1);
@@ -24,7 +24,7 @@ test('argument default value', function(t) {
 });
 
 test('argument fail if absent with no default value', function(t) {
-    var arg = optparse.argument('name', {});
+    var arg = cliparse.argument('name', {});
     var result = arg.getValue(0, []);
 
     t.plan(1);
@@ -32,7 +32,7 @@ test('argument fail if absent with no default value', function(t) {
 });
 
 test('argument uses the given parser', function(t) {
-    var arg = optparse.argument('name', { parser: parsers.intParser});
+    var arg = cliparse.argument('name', { parser: parsers.intParser});
     var result = arg.getValue(0, [12]);
 
     t.plan(1);

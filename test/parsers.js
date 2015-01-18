@@ -1,6 +1,6 @@
 var test = require("tape");
 
-var parsers = require("../parsers.js");
+var parsers = require("../src/parsers.js");
 
 /*
  * stringParser

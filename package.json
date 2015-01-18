@@ -1,8 +1,8 @@
 {
-  "name": "optparse-node",
-  "version": "1.0.0",
-  "description": "",
-  "start": "example.js",
+  "name": "cliparse",
+  "version": "0.1.0",
+  "description": "Declarative CLI parsing for node apps",
+  "main": "src/cliparse.js",
   "dependencies": {
     "lodash": "^2.4.1",
     "minimist": "^1.1.0"

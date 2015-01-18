@@ -1,14 +1,14 @@
 var test = require("tape");
 
-var optparse = require("../optparse.js");
-var parsers = require("../parsers.js");
+var cliparse = require("../src/cliparse.js");
+var parsers = require("../src/parsers.js");
 
 /*
  * option
  */
 
 test('default option use case', function(t) {
-    var option = optparse.option('name');
+    var option = cliparse.option('name');
     var result = option.getValue({ name: 'value' });
 
     t.plan(1);
@@ -16,7 +16,7 @@ test('default option use case', function(t) {
 });
 
 test('option aliases', function(t) {
-    var option = optparse.option('name', { aliases: ['n'] });
+    var option = cliparse.option('name', { aliases: ['n'] });
     var result = option.getValue({ n: 'value' });
 
     t.plan(1);
@@ -24,7 +24,7 @@ test('option aliases', function(t) {
 });
 
 test('option default value', function(t) {
-    var option = optparse.option('name', { defaultValue: 'value' });
+    var option = cliparse.option('name', { defaultValue: 'value' });
     var result = option.getValue({});
 
     t.plan(1);
@@ -32,7 +32,7 @@ test('option default value', function(t) {
 });
 
 test('option fail if absent with no default value', function(t) {
-    var option = optparse.option('name', {});
+    var option = cliparse.option('name', {});
     var result = option.getValue({});
 
     t.plan(1);
@@ -40,7 +40,7 @@ test('option fail if absent with no default value', function(t) {
 });
 
 test('option uses the given parser', function(t) {
-    var option = optparse.option('name', { parser: parsers.intParser});
+    var option = cliparse.option('name', { parser: parsers.intParser});
     var result = option.getValue({ name: 12 });
 
     t.plan(1);
@@ -48,7 +48,7 @@ test('option uses the given parser', function(t) {
 });
 
 test('default flag use case', function(t) {
-    var option = optparse.flag('name');
+    var option = cliparse.flag('name');
     var result = option.getValue({});
     var result2 = option.getValue({ name: true });
     var result3 = option.getValue({ name: false });

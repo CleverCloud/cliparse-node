@@ -1,7 +1,6 @@
 #!/bin/env node
 
-var optparse = require("./optparse.js");
-var parsers = require("./parsers.js");
+var cliparse = require("./src/cliparse");
 
 var echoModule = function(v) {
   if(v.options.reverse === true) {
@@ -18,29 +17,29 @@ var addModule = function(v) {
 
 
 
-var testCli = optparse.cli({
+var testCli = cliparse.cli({
   name: "testCli",
   description: "Simple CLI written for the sake of the example",
   options: [
-    optparse.flag("help", { aliases: ["h", "?"], helpT: "display help" })
+    cliparse.flag("help", { aliases: ["h", "?"], helpT: "display help" })
   ],
   commands: [
 
-    optparse.command(
+    cliparse.command(
       "echo",
       { description: "display the given value",
-        args: [ optparse.argument("value", { helpT: "simple value" })],
-        options: [ optparse.flag("reverse", { aliases: ["r"], helpT: "reverse the value"}) ]
+        args: [ cliparse.argument("value", { helpT: "simple value" })],
+        options: [ cliparse.flag("reverse", { aliases: ["r"], helpT: "reverse the value"}) ]
       },
       echoModule),
 
-    optparse.command(
+    cliparse.command(
       "add2",
       { description: "add 2 to the given integer and display the result",
         args: [
-          optparse.argument("int",
+          cliparse.argument("int",
             { defaultValue: 0,
-              parser: parsers.intParser,
+              parser: cliparse.parsers.intParser,
               helpT: "int to add 2 to" })
         ]
       },
@@ -50,5 +49,5 @@ var testCli = optparse.cli({
 
 
 
-optparse.parseValues(testCli);
+cliparse.parseValues(testCli);
 
