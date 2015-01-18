@@ -1,6 +1,6 @@
 #!/bin/env node
 
-var cliparse = require("./src/cliparse");
+var cliparse = require("../src/cliparse");
 
 var echoModule = function(v) {
   if(v.options.reverse === true) {
