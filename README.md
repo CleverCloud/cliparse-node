@@ -86,7 +86,30 @@ Available options:
 The `command` constructor takes an optional `commands` attribute which allows
 you to nest subcommands at an arbitrary level.
 
-ToDo example
+```javascript
+var testCli = cliparse.cli({
+  name: "testCli",
+  description: "Simple CLI written for the sake of the example",
+  commands: [
+    cliparse.command(
+      "number",
+      { description: "perform simple arithmetic calculations",
+        commands: [
+          cliparse.command(
+            "add",
+            { description: "add two integers",
+              args: [ intArgument, intArgument]
+            }, numberModule.add),
+          cliparse.command(
+            "multiply",
+            { description: "multiply two integers",
+              args: [ intArgument, intArgument]
+            }, numberModule.multiply)
+        ]
+      }),
+  ]
+});
+```
 
 ## API
 
@@ -214,4 +237,3 @@ npm test
 
  - Generate autocompletion script.
  - Better handling of parsing errors for commands (still too many side effects)
- - Document and test subcommands
