@@ -61,7 +61,7 @@ var availableOptionsText = function(options) {
   if(_.isEmpty(options)) {
     return '';
   } else {
-    return "Available options: \n" + _.pluck(options, "helpText").join('\n') + '\n\n';
+    return "Available options: \n" + _.pluck(options, "helpText").join('\n');
   }
 };
 

@@ -16,10 +16,17 @@ var command = function(name, opts, cb) {
     args: args,
     options: flags,
     helpText: function(cliName) {
-      var argList = _.pluck(args, "helpText").join(' ');
-      return "Usage : " + cliName +"  " + name + " " + argList + "\n" +
-          description + "\n\n" +
-          option.availableOptionsText(flags);
+      var optionsText = option.availableOptionsText(flags);
+      var commandsText = availableCommandsText(commands);
+
+      var output = "Usage : " + cliName + " " + name + _.pluck(args, "helpText").join(' ');
+      if(description) output += "\n " + description;
+      output += '\n';
+      if(optionsText) output += '\n' + optionsText;
+      if(optionsText && commandsText) output += '\n';
+      if(commandsText) output += '\n' + commandsText;
+
+      return output;
     },
     singleLineHelp: "  " + name + " " + _.pluck(args, "helpText").join(' ') + "\t\t\t\t" + description,
     getValue: function(cliArgs, cliOpts, globalOpts) {
@@ -45,7 +52,7 @@ var command = function(name, opts, cb) {
                 options: _.extend(parsedOptions.success, globalOpts)
               });
           } else {
-            console.log(this.helpText());
+            return { errors: {} };
           }
         }
       } else {
@@ -55,6 +62,15 @@ var command = function(name, opts, cb) {
   };
 };
 
+var availableCommandsText = function(commands) {
+  if(_.isEmpty(commands)) {
+    return '';
+  } else {
+    return "Available commands: \n" + _.pluck(commands, "singleLineHelp").join('\n');
+  }
+};
+
 module.exports = {
+    availableCommandsText: availableCommandsText,
     command: command
 };

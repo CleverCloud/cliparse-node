@@ -1,6 +1,7 @@
 var _ = require("lodash");
 
 var argument = require("./argument");
+var command = require("./command");
 var option = require("./option");
 var utils = require("./utils");
 
@@ -44,12 +45,16 @@ var cli = function(opts, cb) {
 
     },
     helpText: function() {
+      var optionsText = option.availableOptionsText(flags);
+      var commandsText = command.availableCommandsText(commands);
+
       var output = name;
       if(description) output += ": " + description;
-      output += '\n\n';
-      output += option.availableOptionsText(flags) +
-          "Available commands: \n" +
-          _.pluck(commands, "singleLineHelp").join('\n');
+      output += '\n';
+      if(!_.isEmpty(args)) output += "\nUsage : " + name + _.pluck(args, "helpText").join(' ');
+      if(optionsText) output += '\n' + optionsText;
+      if(optionsText && commandsText) output += '\n';
+      if(commandsText) output += '\n' + commandsText;
 
       return output;
     }()
