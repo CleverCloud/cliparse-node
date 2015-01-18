@@ -14,6 +14,10 @@
   "scripts": {
     "test": "node test/main.js | ./node_modules/tap-spec/bin/cmd.js"
   },
-  "author": "",
-  "license": "MIT"
+  "author": "Clément Delafargue <clement@delafargue.name>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/divarvel/cliparse-node.git"
+  }
 }
