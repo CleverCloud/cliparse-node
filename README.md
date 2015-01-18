@@ -173,6 +173,35 @@ Where `name` is the name of the command , and `opts` can contain
 match). It is called with a `{ args: ['value'], options: {key: 'value'}}` object. `opts` contains
 both the options of the command and the options of the parent commands.
 
+### Parsers
+
+Basic scalar types (`int`, `bool`, and `string`) are already supported. It is
+possible to declare your own parsers to validate more specific types of values
+(eg. enums).
+
+A parser is a function `String -> Result` where `Result` is either 
+
+ - `{ success: <parsed value> }`
+ - or `{ error: <error message> }`
+
+For instance, to parse an hexadecimal RBG color:
+
+```javascript
+var colorParser = function(input) {
+  var pattern = /^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i;
+  var matches = input.match(pattern);
+  if(matches !== null) {
+    return {
+        success: matches.slice(1,4)
+            .map(function(x) { return parseInt(x, 16); }) };
+  } else {
+    return { error: "invalid color code" };
+  }
+}
+```
+
+
+
 ## Contributing
 
 Make sure you don't break anything.
@@ -185,5 +214,4 @@ npm test
 
  - Generate autocompletion script.
  - Better handling of parsing errors for commands (still to many side effects)
- - Document custom parsers
  - Document and test subcommands
