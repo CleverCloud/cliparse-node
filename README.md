@@ -166,3 +166,17 @@ Where `name` is the name of the command , and `opts` can contain
 match). It is called with a `{ args: ['value'], options: {key: 'value'}}` object. `opts` contains
 both the options of the command and the options of the parent commands.
 
+## Contributing
+
+Make sure you don't break anything.
+
+```bash
+npm test
+```
+
+## ToDo list
+
+ - Generate autocompletion script.
+ - Better handling of parsing errors for commands (still to many side effects)
+ - Document custom parsers
+ - Document and test subcommands
