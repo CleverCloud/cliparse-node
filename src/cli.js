@@ -51,8 +51,8 @@ var cli = function(opts, cb) {
       var output = name;
       if(description) output += ": " + description;
       output += '\n';
-      if(!_.isEmpty(args)) output += "\nUsage : " + name + _.pluck(args, "helpText").join(' ');
-      if(optionsText) output += '\n' + optionsText;
+      if(!_.isEmpty(args)) output += "\nUsage : " + name + " " + _.pluck(args, "helpText").join(' ');
+      if(optionsText) output += '\n\n' + optionsText;
       if(optionsText && commandsText) output += '\n';
       if(commandsText) output += '\n' + commandsText;
 
