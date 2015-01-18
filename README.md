@@ -10,7 +10,7 @@ options values (types supported out of the box: `int`, `bool`, `string`).
 
 ```javascript
 var cliparse = require("cliparse");
-var parsers = criparse.parsers;
+var parsers = cliparse.parsers;
 
 var cliParser = cliparse.cli({
   name: "my-executable",
