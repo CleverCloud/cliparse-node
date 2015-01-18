@@ -213,5 +213,5 @@ npm test
 ## ToDo list
 
  - Generate autocompletion script.
- - Better handling of parsing errors for commands (still to many side effects)
+ - Better handling of parsing errors for commands (still too many side effects)
  - Document and test subcommands
