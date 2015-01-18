@@ -5,6 +5,11 @@ commands and subcommands (at an arbitrary depth), automatically generates help
 text and `usage` contents. You can use custom parsers for attributes and
 options values (types supported out of the box: `int`, `bool`, `string`).
 
+Its design is vaguely inspired from
+[optparse-applicative](https://hackage.haskell.org/package/optparse-applicative)
+which is a great CLI parsing library. JS being not as expressive as Haskell, a
+direct port is not possible.
+
 
 ## Enough talk, show me the code
 
