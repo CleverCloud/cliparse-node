@@ -1,6 +1,6 @@
 var _ = require("lodash");
 
-module.exports = {
+var parsers = {
   intParser: function(value) {
     var parsed = parseInt(value, 10);
     if(isNaN(value)) {
@@ -23,3 +23,5 @@ module.exports = {
     }
   }
 };
+
+module.exports = parsers;

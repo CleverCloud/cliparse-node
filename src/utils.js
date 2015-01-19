@@ -1,6 +1,6 @@
 var _ = require("lodash");
 
-module.exports = {
+var utils = {
   getProcessName: function(args) {
     if(args[0] === 'node') {
       return _.take(args, 2).join(" ");
@@ -39,3 +39,5 @@ module.exports = {
       return _.every(xs, this.isValidOption);
   }
 };
+
+module.exports = utils;
