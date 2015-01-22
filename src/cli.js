@@ -48,10 +48,22 @@ var cli = function(opts, cb) {
       var optionsText = option.availableOptionsText(flags);
       var commandsText = command.availableCommandsText(commands);
 
+      var requiredOptions = _.filter(flags, function(option) { return option.required; });
+
+      var argsHelp = _.pluck(args, "helpText");
+      var optionsHelp = _.map(requiredOptions, function(opt) {
+        return opt.helpUsage;
+      });
+      var yolo = argsHelp.concat(optionsHelp);
+
+
       var output = name;
       if(description) output += ": " + description;
       output += '\n';
-      if(!_.isEmpty(args)) output += "\nUsage : " + name + " " + _.pluck(args, "helpText").join(' ');
+      if(action !== null) {
+        output += "\nUsage : " + name;
+        if(yolo.length > 0) output += ' ' + yolo.join(' ');
+      }
       if(optionsText) output += '\n\n' + optionsText;
       if(optionsText && commandsText) output += '\n';
       if(commandsText) output += '\n' + commandsText;

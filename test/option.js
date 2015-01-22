@@ -31,12 +31,20 @@ test('option default value', function(t) {
     t.same(result, { success: 'value' }, 'using default value');
 });
 
-test('option fail if absent with no default value', function(t) {
-    var option = cliparse.option('name', {});
+test('required option fail if absent with no default value', function(t) {
+    var option = cliparse.option('name', { required: true });
     var result = option.getValue({});
 
     t.plan(1);
     t.notEqual(result.error, undefined, 'error if neither value nor default is defined');
+});
+
+test('falcultative option success if absent with no default value', function(t) {
+    var option = cliparse.option('name', {});
+    var result = option.getValue({});
+
+    t.plan(1);
+    t.same(result, { success: null }, 'null for non mandatory option');
 });
 
 test('option uses the given parser', function(t) {

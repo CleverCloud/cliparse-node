@@ -10,33 +10,44 @@ var option = function(name, opts) {
   var parser = options.parser || parsers.stringParser;
   var helpT = options.helpT || "";
   var defaultValue = (typeof options.defaultValue !== 'undefined') ? options.defaultValue : null;
+  var required = options.required && !defaultValue ? true : false;
+
+  var helpUsage = function() {
+      var output = displayOptionNames(names, required, false);
+      if(metavar) output += ' ' + metavar.toUpperCase();
+      return output;
+  }();
+
+  var helpText = function() {
+      var output = displayOptionNames(names, required, true);
+      if(metavar) output += ' ' + metavar.toUpperCase();
+      return output + "\t\t\t\t" + helpT;
+  }();
 
   return {
     names: names,
+    required: required,
     getValue: function(cliOpts) {
         var value = _(names)
             .map(function(name) { return cliOpts[name]; })
             .find(function(v) { return typeof v !== 'undefined'; });
       if(value) {
         return parser(value);
-      } else if(defaultValue !== null) {
+      } else if(defaultValue !== null || !required) {
         return { success: defaultValue };
       } else {
         return { error: "missing value" };
       }
     },
-    helpText: function() {
-      var name = displayOptionNames(names);
-      if(metavar) name += ' ' + metavar.toUpperCase();
-      return name + "\t\t\t\t" + helpT;
-    }()
+    helpText: helpText,
+    helpUsage: helpUsage
   };
 };
 
 var flag = function(name, opts) {
     var options = opts || {};
     options.parser = parsers.booleanParser;
-    if(typeof options.defaultValue === 'undefined') options.defaultValue = false;
+    if(typeof options.defaultValue === 'undefined' && !options.required) options.defaultValue = false;
     return option(name, options);
 };
 
@@ -65,11 +76,20 @@ var availableOptionsText = function(options) {
   }
 };
 
-var displayOptionNames = function(names) {
-  return _.map(names, function(name) {
+var displayOptionNames = function(names, required, allNames) {
+  var output;
+  if(!allNames) {
+    names = _.take(names, 1);
+  };
+
+  output =  _.map(names, function(name) {
     if(name.length > 1) return '--' + name;
     else return '-' + name;
   }).join(", ");
+
+  if(!required) output = '[' + output + ']';
+
+  return output;
 };
 
 module.exports = {

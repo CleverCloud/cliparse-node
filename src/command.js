@@ -18,8 +18,16 @@ var command = function(name, opts, cb) {
     helpText: function(cliName) {
       var optionsText = option.availableOptionsText(flags);
       var commandsText = availableCommandsText(commands);
+      var requiredOptions = _.filter(flags, function(option) { return option.required; });
 
-      var output = "Usage : " + cliName + " " + name + _.pluck(args, "helpText").join(' ');
+      var argsHelp = _.pluck(args, "helpText");
+      var optionsHelp = _.map(requiredOptions, function(opt) {
+        return opt.helpUsage;
+      });
+      var yolo = argsHelp.concat(optionsHelp);
+
+      var output = "Usage : " + cliName + " " + name;
+      if(yolo.length > 0) output += ' ' + yolo.join(' ');
       if(description) output += "\n " + description;
       output += '\n';
       if(optionsText) output += '\n' + optionsText;

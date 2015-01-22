@@ -24,9 +24,9 @@ test('command with one flag', function(t) {
     mkCommand(function(vs) { t.isNotEqual(vs.options.test, true, 'option not there'); }).getValue([], {});
 });
 
-test('command with one option without default', function(t) {
+test('command with a required option without default', function(t) {
     t.plan(2);
-    var option = cliparse.option('test');
+    var option = cliparse.option('test', { required: true });
     var mkCommand = function(cb) {
         return cliparse.command( 'name', { options: [option] }, cb);
     };
