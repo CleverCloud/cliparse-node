@@ -15,6 +15,10 @@ direct port is not possible.
 
 ## Enough talk, show me the code
 
+```bash
+npm install cliparse
+```
+
 ```javascript
 var cliparse = require("cliparse");
 var parsers = cliparse.parsers;
