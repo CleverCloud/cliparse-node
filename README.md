@@ -147,7 +147,9 @@ Where name is the name of the flag, and opts can contain
    which is a noop parser returning the string.
  - `helpT`: a single-line description of what the option is about. Default
    value: the empty string.
- - `defaultValue`: value used if the option is not given any value
+ - `required`: make option mandatory
+ - `defaultValue`: value used if the option is not given any value. If set,
+   overrides the `required` setting.
 
 
 ### `flag`
