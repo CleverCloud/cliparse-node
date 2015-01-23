@@ -23,7 +23,7 @@ var cli = function(opts, cb) {
         });
 
         if(matchedCommand) {
-          var commandResult = matchedCommand.getValue(_.drop(cliArgs, 1), cliOpts, parsedOptions.success);
+          var commandResult = matchedCommand.getValue(_.drop(cliArgs, 1), cliOpts, parsedOptions.success, name);
           if(utils.isError(commandResult)) {
             console.log(matchedCommand.helpText(name));
           }

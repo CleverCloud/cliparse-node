@@ -37,7 +37,7 @@ var command = function(name, opts, cb) {
       return output;
     },
     singleLineHelp: "  " + name + " " + _.pluck(args, "helpText").join(' ') + "\t\t\t\t" + description,
-    getValue: function(cliArgs, cliOpts, globalOpts) {
+    getValue: function(cliArgs, cliOpts, globalOpts, parentName) {
       var globalOptions = globalOpts || {};
       var parsedOptions = option.parseOptions(flags, cliOpts);
 
@@ -47,9 +47,9 @@ var command = function(name, opts, cb) {
         });
 
         if(matchedCommand) {
-          var commandResult = matchedCommand.getValue(_.drop(cliArgs, 1), cliOpts, parsedOptions.success);
+          var commandResult = matchedCommand.getValue(_.drop(cliArgs, 1), cliOpts, parsedOptions.success, parentName + ' ' + name);
           if(utils.isError(commandResult)) {
-            console.log(matchedCommand.helpText(name));
+            console.log(matchedCommand.helpText(parentName + ' ' + name));
           }
         } else {
           var parsedArgs = argument.parseArgs(args, cliArgs);
