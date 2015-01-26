@@ -23,9 +23,9 @@ var cli = function(opts, cb) {
         });
 
         if(matchedCommand) {
-          var commandResult = matchedCommand.getValue(_.drop(cliArgs, 1), cliOpts, parsedOptions.success, name);
+          var commandResult = matchedCommand.getValue(_.drop(cliArgs, 1), cliOpts, parsedOptions.success, name, flags);
           if(utils.isError(commandResult)) {
-            console.log(matchedCommand.helpText(name));
+            console.log(matchedCommand.helpText(name, flags));
           }
         } else {
           var parsedArgs = argument.parseArgs(args, cliArgs);

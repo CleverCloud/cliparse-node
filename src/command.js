@@ -15,10 +15,10 @@ var command = function(name, opts, cb) {
     name: name,
     args: args,
     options: flags,
-    helpText: function(cliName) {
-      var optionsText = option.availableOptionsText(flags);
+    helpText: function(cliName, parentOptions) {
+      var optionsText = option.availableOptionsText(parentOptions.concat(flags));
       var commandsText = availableCommandsText(commands);
-      var requiredOptions = _.filter(flags, function(option) { return option.required; });
+      var requiredOptions = _.filter(parentOptions.concat(flags), function(option) { return option.required; });
 
       var argsHelp = _.pluck(args, "helpText");
       var optionsHelp = _.map(requiredOptions, function(opt) {
@@ -37,7 +37,8 @@ var command = function(name, opts, cb) {
       return output;
     },
     singleLineHelp: "  " + name + " " + _.pluck(args, "helpText").join(' ') + "\t\t\t\t" + description,
-    getValue: function(cliArgs, cliOpts, globalOpts, parentName) {
+    getValue: function(cliArgs, cliOpts, globalOpts, parentName, parentOptions) {
+      parentOptions = parentOptions || [];
       var globalOptions = globalOpts || {};
       var parsedOptions = option.parseOptions(flags, cliOpts);
 
@@ -47,9 +48,9 @@ var command = function(name, opts, cb) {
         });
 
         if(matchedCommand) {
-          var commandResult = matchedCommand.getValue(_.drop(cliArgs, 1), cliOpts, parsedOptions.success, parentName + ' ' + name);
+          var commandResult = matchedCommand.getValue(_.drop(cliArgs, 1), cliOpts, parsedOptions.success, parentName + ' ' + name, parentOptions.concat(flags));
           if(utils.isError(commandResult)) {
-            console.log(matchedCommand.helpText(parentName + ' ' + name));
+            console.log(matchedCommand.helpText(parentName + ' ' + name, parentOptions));
           }
         } else {
           var parsedArgs = argument.parseArgs(args, cliArgs);
