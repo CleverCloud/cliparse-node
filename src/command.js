@@ -50,7 +50,7 @@ var command = function(name, opts, cb) {
         if(matchedCommand) {
           var commandResult = matchedCommand.getValue(_.drop(cliArgs, 1), cliOpts, parsedOptions.success, parentName + ' ' + name, parentOptions.concat(flags));
           if(utils.isError(commandResult)) {
-            console.log(matchedCommand.helpText(parentName + ' ' + name, parentOptions));
+            console.log(matchedCommand.helpText(parentName + ' ' + name, parentOptions.concat(flags)));
           }
         } else {
           var parsedArgs = argument.parseArgs(args, cliArgs);
