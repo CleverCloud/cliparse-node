@@ -26,34 +26,31 @@ var parsers = cliparse.parsers;
 var cliParser = cliparse.cli({
   name: "my-executable",
   description: "Simple CLI written for the sake of the example",
-  options: [
-    cliparse.flag("help", { aliases: ["h", "?"], helpT: "display help" })
-  ],
   commands: [
 
     cliparse.command(
       "echo",
-      { description: "display the given value",
-        args: [ cliparse.argument("value", { helpT: "simple value" })],
-        options: [ cliparse.flag("reverse", { aliases: ["r"], helpT: "reverse the value"}) ]
+      { description: "Display the given value",
+        args: [ cliparse.argument("value", { description: "Simple value" })],
+        options: [ cliparse.flag("reverse", { aliases: ["r"], description: "Reverse the value"}) ]
       },
       echoModule),
 
     cliparse.command(
       "add2",
-      { description: "add 2 to the given integer and display the result",
+      { description: "Add 2 to the given integer and display the result",
         args: [
           cliparse.argument("int",
-            { defaultValue: 0,
+            { default: 0,
               parser: parsers.intParser,
-              helpT: "int to add 2 to" })
+              description: "Int to add 2 to" })
         ]
       },
       addModule)
   ]
 });
 
-cliparse.parseValues(testCli);
+cliparse.parse(testCli);
 ```
 
 Where `echoModule` and `addModule` are callbacks taking a `{ args: ['value'], options: {key: 'value'} }` parameter.
@@ -63,26 +60,33 @@ Where `echoModule` and `addModule` are callbacks taking a `{ args: ['value'], op
 #### Top-level help
 
 ```
-$ my-executable
-my-executable: Simple CLI written for the sake of the example.
+$ my-executable --help
+Usage: my-executable
+Simple CLI written for the sake of the example.
 
-Available options:
---help, -h, -?                          display help
+
+Options:
+[--help, -?]                    Display help about this program
 
 Available commands:
-  echo VALUE                            display the given value
-  add2 [INT]                            add 2 to the given integer and display the result
+help                            Display help about this program
+echo VALUE                      Display the given value
+add2 [INT]                      Add 2 to the given integer and display the result
 ```
 
 #### Command-level help
 
 ```
-$ my-executable echo
-Usage : my-executable  echo VALUE
+$ my-executable echo --help
+Usage : my-executable echo VALUE
 display the given value
 
-Available options:
---reverse, -r                           reverse the value
+Arguments:
+VALUE                           Simple value
+
+Options:
+[--help, -?]                    Display help about this program
+[--reverse, -r]                 Reverse the value
 ```
 
 ## Subcommands
@@ -132,8 +136,12 @@ Where opts can contain
  - `commands`: array of commands (constructed with `command`). Default value: `[]`
  - `args`: array of arguments (constructed with `argument`). If your app
    doesn't have commands.
+ - `noHelpCommand`: boolean used to disable help command, useful for apps with
+   no subcommands. Default value: `false`.
 
-If your application is not solely made of commands, you can pass an action callback. If you don't give a callback, calling your application without any argument will display a `usage` message describing the available commands.
+If your application is not solely made of commands, you can pass an action
+callback. If you don't give a callback, calling your application without any
+argument will display a `usage` message describing the available commands.
 
 ### `option`
 
@@ -149,10 +157,10 @@ Where name is the name of the flag, and opts can contain
   see below)
  - `parser`: the parser used to parse the value. Default value: `stringParser`
    which is a noop parser returning the string.
- - `helpT`: a single-line description of what the option is about. Default
+ - `description`: a single-line description of what the option is about. Default
    value: the empty string.
  - `required`: make option mandatory
- - `defaultValue`: value used if the option is not given any value. If set,
+ - `default`: value used if the option is not given any value. If set,
    overrides the `required` setting.
 
 
@@ -167,7 +175,7 @@ flag(name, opts);
 Acts like `option`, with different defaults:
 
  - `parser` defaults to `booleanParser`, which parses boolean values
- - `defaultValue` defaults to `false`
+ - `default` defaults to `false`
 
 ### `argument`
 
@@ -179,8 +187,8 @@ Where opts can contain
 
  - `parser`: ther parser used to parse the value of the argument. Default
    value: `stringParser`
- - `help`: a single-line description of what the argument is about.
- - `defaultValue`: value used if the argument is not given any value
+ - `description`: a single-line description of what the argument is about.
+ - `default`: value used if the argument is not given any value
 
 
 ### `command`
@@ -213,6 +221,9 @@ A parser is a function `String -> Result` where `Result` is either
  - `{ success: <parsed value> }`
  - or `{ error: <error message> }`
 
+Parser results can be constructed with `parsers.success(<value>)` and
+`parsers.error(<reason>)`.
+
 For instance, to parse an hexadecimal RBG color:
 
 ```javascript
@@ -220,11 +231,11 @@ var colorParser = function(input) {
   var pattern = /^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i;
   var matches = input.match(pattern);
   if(matches !== null) {
-    return {
-        success: matches.slice(1,4)
-            .map(function(x) { return parseInt(x, 16); }) };
+    var components = matches.slice(1,4)
+          .map(function(x) { return parseInt(x, 16); });
+    return parsers.success(components);
   } else {
-    return { error: "invalid color code" };
+    return parsers.error("invalid color code");
   }
 }
 ```
@@ -242,4 +253,3 @@ npm test
 ## ToDo list
 
  - Generate autocompletion script.
- - Better handling of parsing errors for commands (still too many side effects)
