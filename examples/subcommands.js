@@ -16,7 +16,7 @@ var intArgument = cliparse.argument(
   {
     defaultValue: 0,
     parser: cliparse.parsers.intParser,
-    helpT: "int value"
+    description: "int value"
   }
 );
 
@@ -48,4 +48,4 @@ var testCli = cliparse.cli({
 
 
 
-cliparse.parseValues(testCli);
+cliparse.parse(testCli);

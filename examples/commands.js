@@ -20,16 +20,13 @@ var addModule = function(v) {
 var testCli = cliparse.cli({
   name: "testCli",
   description: "Simple CLI written for the sake of the example",
-  options: [
-    cliparse.flag("help", { aliases: ["h", "?"], helpT: "display help" })
-  ],
   commands: [
 
     cliparse.command(
       "echo",
       { description: "display the given value",
-        args: [ cliparse.argument("value", { helpT: "simple value" })],
-        options: [ cliparse.flag("reverse", { aliases: ["r"], helpT: "reverse the value"}) ]
+        args: [ cliparse.argument("value", { description: "simple value" })],
+        options: [ cliparse.flag("reverse", { aliases: ["r"], description: "reverse the value"}) ]
       },
       echoModule),
 
@@ -38,9 +35,9 @@ var testCli = cliparse.cli({
       { description: "add 2 to the given integer and display the result",
         args: [
           cliparse.argument("int",
-            { defaultValue: 0,
+            { default: 0,
               parser: cliparse.parsers.intParser,
-              helpT: "int to add 2 to" })
+              description: "int to add 2 to" })
         ]
       },
       addModule)
@@ -49,5 +46,5 @@ var testCli = cliparse.cli({
 
 
 
-cliparse.parseValues(testCli);
+cliparse.parse(testCli);
 
