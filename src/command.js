@@ -2,84 +2,119 @@ var _ = require("lodash");
 
 var argument = require("./argument");
 var option = require("./option");
+var parsers = require("./parsers");
 var utils = require("./utils");
 
-var command = function(name, opts, cb) {
-  var options = opts || {};
-  var description = options.description || "";
-  var args = options.args || [];
-  var flags = options.options || [];
-  var commands = options.commands || [];
-  var action = typeof cb !== 'undefined' ? cb : null;
-  return {
-    name: name,
-    args: args,
-    options: flags,
-    helpText: function(cliName, parentOptions) {
-      var optionsText = option.availableOptionsText(parentOptions.concat(flags));
-      var commandsText = availableCommandsText(commands);
-      var requiredOptions = _.filter(parentOptions.concat(flags), function(option) { return option.required; });
 
-      var argsHelp = _.pluck(args, "helpText");
-      var optionsHelp = _.map(requiredOptions, function(opt) {
-        return opt.helpUsage;
-      });
-      var yolo = argsHelp.concat(optionsHelp);
+var command = module.exports = {};
 
-      var output = "Usage : " + cliName + " " + name;
-      if(yolo.length > 0) output += ' ' + yolo.join(' ');
-      if(description) output += "\n " + description;
-      output += '\n';
-      if(optionsText) output += '\n' + optionsText;
-      if(optionsText && commandsText) output += '\n';
-      if(commandsText) output += '\n' + commandsText;
+command.parseFinal = function(cmd, parentOptions, givenArgs, givenOpts) {
+  var result;
+  var parsedArguments = argument.parseList(cmd.args, givenArgs);
+  var parsedOptions = option.parseObject(cmd.options.concat(parentOptions), givenOpts);
 
-      return output;
-    },
-    singleLineHelp: "  " + name + " " + _.pluck(args, "helpText").join(' ') + "\t\t\t\t" + description,
-    getValue: function(cliArgs, cliOpts, globalOpts, parentName, parentOptions) {
-      parentOptions = parentOptions || [];
-      var globalOptions = globalOpts || {};
-      var parsedOptions = option.parseOptions(flags, cliOpts);
-
-      if(utils.isValid(parsedOptions)) {
-        var matchedCommand = _.find(commands, function(command) {
-          return command.name === cliArgs[0];
-        });
-
-        if(matchedCommand) {
-          var commandResult = matchedCommand.getValue(_.drop(cliArgs, 1), cliOpts, parsedOptions.success, parentName + ' ' + name, parentOptions.concat(flags));
-          if(utils.isError(commandResult)) {
-            console.log(matchedCommand.helpText(parentName + ' ' + name, parentOptions.concat(flags)));
-          }
-        } else {
-          var parsedArgs = argument.parseArgs(args, cliArgs);
-
-          if(action !== null && utils.isValid(parsedArgs)) {
-              action({
-                args: parsedArgs.success,
-                options: _.extend(parsedOptions.success, globalOpts)
-              });
-          } else {
-            return { errors: {} };
-          }
-        }
-      } else {
-        return { errors: {} };
-      }
-    }
-  };
-};
-
-var availableCommandsText = function(commands) {
-  if(_.isEmpty(commands)) {
-    return '';
+  if(parsers.isSuccess(parsedArguments) && parsers.isSuccess(parsedOptions)) {
+    result = parsers.success({
+      args: parsedArguments.success,
+      options: parsedOptions.success
+    });
   } else {
-    return "Available commands: \n" + _.pluck(commands, "singleLineHelp").join('\n');
+    result = parsers.error({
+      args: parsedArguments.error || [],
+      options: parsedOptions.error || {}
+    });
   }
+  result.context = [cmd];
+
+  return result;
 };
 
-module.exports = {
-    availableCommandsText: availableCommandsText,
-    command: command
+command.parse = function(cmd, parentOptions, givenArgs, givenOpts) {
+  var result;
+  var matchedCommand = _.find(cmd.commands, function(subcommand) {
+    return subcommand.name === _.head(givenArgs);
+  });
+
+  if(matchedCommand) {
+    result = command.parse(matchedCommand, cmd.options.concat(parentOptions), _.drop(givenArgs, 1), givenOpts);
+    result.context = [cmd].concat(result.context);
+  } else {
+    result = command.parseFinal(cmd, parentOptions, givenArgs, givenOpts);
+  }
+
+  return result;
+};
+
+command.singleLineHelp = function(cmd) {
+  return [cmd.name + " " + _.map(cmd.arg, argument.help), cmd.description];
+};
+
+command.usage = function(context) {
+  var cmd = _.last(context);
+  var elems = _(context).map(function(cmd) {
+    var required = _.filter(cmd.options, function(opt) { return opt.required; });
+    return [ cmd.name ].concat(_.map(required, option.usage));
+  }).flatten();
+  var args = _.map(cmd.args, argument.usage);
+
+  return elems.concat(args).join(' ');
+};
+
+command.help = function(context) {
+  var options = _.flatten(_.map(context, function(cmd) { return cmd.options; }));
+
+  var usage = "Usage: " + command.usage(context);
+
+  var cmd = _.last(context);
+  var argumentHelp = _.map(cmd.args, argument.help);
+  var commandsList = _.map(cmd.commands, command.singleLineHelp);
+  var optionsList = _.map(options, option.help);
+
+  var leftColumnWidth = 5 + _.max(_.map(argumentHelp.concat(commandsList, optionsList), function(cells) {
+    return cells[0].length;
+  }));
+
+  var output = usage + '\n';
+  if(cmd.description) output += cmd.description + '\n';
+  output += '\n';
+
+  if(!_.isEmpty(argumentHelp)) {
+    output += 'Arguments:\n';
+    _.each(argumentHelp, function(arg) {
+      var padding = new Array(leftColumnWidth - arg[0].length + 1).join(' ');
+      output += arg[0] + padding + arg[1] +'\n';
+    });
+    output += '\n';
+  }
+
+  if(!_.isEmpty(optionsList)) {
+    output += 'Options:\n';
+    _.each(optionsList, function(arg) {
+      var padding = new Array(leftColumnWidth - arg[0].length + 1).join(' ');
+      output += arg[0] + padding + arg[1] +'\n';
+    });
+    output += '\n';
+  }
+
+  if(!_.isEmpty(commandsList)) {
+    output += 'Available Commands:\n';
+    _.each(commandsList, function(arg) {
+      var padding = new Array(leftColumnWidth - arg[0].length + 1).join(' ');
+      output += arg[0] + padding + arg[1] +'\n';
+    });
+    output += '\n';
+  }
+  return output;
+};
+
+
+command.command = function(name, options, cb) {
+  options = options || {};
+  options.name = name;
+  options.description = options.description || "";
+  options.args = options.args || [];
+  options.options = options.options || [];
+  options.commands = options.commands || [];
+  options.action = typeof cb !== 'undefined' ? cb : null;
+  return options;
 };
