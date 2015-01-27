@@ -2,6 +2,8 @@ var _ = require("lodash");
 var minimist = require("minimist");
 
 var argument = require("./argument");
+var autocomplete = require("./autocomplete");
+var autocompleteScript = require("./autocompleteScript");
 var command = require("./command");
 var option = require("./option");
 var parsers = require("./parsers");
@@ -73,8 +75,12 @@ cli.execute = function(cliApp, args, options) {
   }
 };
 
-cli.autocomplete = function(cliApp, argv) {
-  // ToDo
+cli.autocomplete = function(cliApp, words, index) {
+  if(typeof words !== 'object') words = [words];
+  var argv = minimist(words);
+  var results = command.autocomplete(cliApp, [], argv, words, index);
+  var current = words[index] || '';
+  console.log(autocomplete.compgen(results) + ' -- ' + current);
 };
 
 cli.parse = function(cliApp, argv) {
@@ -96,8 +102,11 @@ cli.parse = function(cliApp, argv) {
     cli.displayUsage(cliApp, args);
   } else if(!cliApp.noHelpCommand && args[0] === 'help') {
     cli.displayUsage(cliApp, _.drop(args, 1));
+  } else if(options["bash-autocomplete-script"]) {
+    console.log(autocompleteScript.bashScript(options["bash-autocomplete-script"]));
+  } else if(options["autocomplete-words"] && options["autocomplete-index"]) {
+    cli.autocomplete(cliApp, options["autocomplete-words"], options["autocomplete-index"]);
   } else {
     cli.execute(cliApp, args, options);
   }
 };
-

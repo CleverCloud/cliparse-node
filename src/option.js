@@ -1,9 +1,24 @@
 var _ = require("lodash");
 
+var autocomplete = require("./autocomplete");
 var parsers = require("./parsers");
 var utils = require("./utils");
 
 var option = module.exports = {};
+
+option.option = function(name, options) {
+  options = options || {};
+  options.name = name;
+  options.names = [options.name].concat(options.aliases || []);
+  options.metavar = options.metavar || null;
+  options.parser = options.parser || parsers.stringParser;
+  options.description = options.description || "";
+  options.complete = options.complete || autocomplete.defaultCompleter;
+  options.default = (typeof options.default !== 'undefined') ? options.default : null;
+  options.required = options.required && !options.defaultValue ? true : false;
+
+  return options;
+};
 
 option.parse = function(opt, providedOptions) {
   var result;
@@ -50,19 +65,6 @@ option.usage = function(opt) {
   return output;
 };
 
-option.option = function(name, options) {
-  options = options || {};
-  options.name = name;
-  options.names = [options.name].concat(options.aliases || []);
-  options.metavar = options.metavar || null;
-  options.parser = options.parser || parsers.stringParser;
-  options.description = options.description || "";
-  options.default = (typeof options.default !== 'undefined') ? options.default : null;
-  options.required = options.required && !options.defaultValue ? true : false;
-
-  return options;
-};
-
 option.flag = function(name, options) {
     options = options || {};
     options.parser = parsers.booleanParser;
@@ -100,3 +102,15 @@ option.displayOptionNames = function(names, required, allNames) {
 };
 
 option.helpOption = option.flag('help', { aliases: ['?'], description: 'Display help about this program' });
+
+option.complete = function(opt, word) {
+  return opt.complete(word);
+};
+
+option.completeName = function(opt) {
+  var names = _.map(opt.names, function(name) {
+    if(name.length > 1) return '--' + name;
+    else return '-' + name;
+  });
+  return autocomplete.words(names);
+};

@@ -1,9 +1,21 @@
 var _ = require("lodash");
 
+var autocomplete = require("./autocomplete");
 var parsers = require("./parsers");
 var utils = require("./utils");
 
 var argument = module.exports = {};
+
+argument.argument = function(name, options) {
+  options = options || {};
+  options.name = name || "argument";
+  options.parser = options.parser || parsers.stringParser;
+  options.description = options.description || "";
+  options.complete = options.complete || autocomplete.defaultCompleter;
+  options.default = typeof options.default !== "undefined" ? options.default : null;
+
+  return options;
+};
 
 argument.parse = function(argument, value) {
   var result;
@@ -45,12 +57,6 @@ argument.help = function(arg) {
   return [argument.usage(arg), arg.description];
 };
 
-argument.argument = function(name, options) {
-  options = options || {};
-  options.name = name || "argument";
-  options.parser = options.parser || parsers.stringParser;
-  options.description = options.description || "";
-  options.default = typeof options.default !== "undefined" ? options.default : null;
-
-  return options;
+argument.complete = function(arg, word) {
+  return arg.complete(word);
 };
