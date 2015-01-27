@@ -1,27 +1,49 @@
 var _ = require("lodash");
 
-var parsers = {
-  intParser: function(value) {
-    var parsed = parseInt(value, 10);
-    if(isNaN(value)) {
-      return { error: "invalid int: " + value };
-    } else {
-      return { success: parsed };
-    }
-  },
+var parsers = module.exports = {};
 
-  stringParser: function(value) {
-    return { success: value.toString() };
-  },
+parsers.success = function(value) {
+  return { success: value };
+};
 
-  booleanParser: function(value) {
-    // minimist autoparses stuff anyway…
-    if(typeof value === 'boolean') {
-      return { success: value };
-    } else {
-      return { error: "invalid boolean: " + value };
-    }
+parsers.error = function(error) {
+  return { error: error };
+};
+
+parsers.intParser = function(value) {
+  var parsed = parseInt(value, 10);
+  if(isNaN(value)) {
+    return parsers.error("invalid int: " + value);
+  } else {
+    return parsers.success(parsed);
   }
 };
 
-module.exports = parsers;
+parsers.stringParser = function(value) {
+  return parsers.success(value.toString());
+};
+
+parsers.booleanParser = function(value) {
+  // minimist autoparses stuff anyway…
+  if(typeof value === 'boolean') {
+    return parsers.success(value);
+  } else {
+    return parsers.error("invalid boolean: " + value);
+  }
+};
+
+parsers.fold = function(result, errorCb, successCb) {
+  if(_.has(result, "success")) {
+    return successCb(result.success);
+  } else {
+    return errorCb(result.error);
+  }
+};
+
+parsers.isError = function(result) {
+  return parsers.fold(result, function(__) { return true; }, function(__) { return false });
+};
+
+parsers.isSuccess = function(result) {
+  return !parsers.isError(result);
+};
