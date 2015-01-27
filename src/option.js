@@ -98,3 +98,5 @@ option.displayOptionNames = function(names, required, allNames) {
 
   return output;
 };
+
+option.helpOption = option.flag('help', { aliases: ['?'], description: 'Display help about this program' });

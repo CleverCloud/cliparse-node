@@ -8,6 +8,18 @@ var utils = require("./utils");
 
 var command = module.exports = {};
 
+command.command = function(name, options, cb) {
+  options = options || {};
+  options.name = name;
+  options.description = options.description || "";
+  options.args = options.args || [];
+  options.options = options.options || [];
+  options.commands = options.commands || [];
+  options.action = typeof cb !== 'undefined' ? cb : null;
+  return options;
+};
+
+
 command.parseFinal = function(cmd, parentOptions, givenArgs, givenOpts) {
   var result;
   var parsedArguments = argument.parseList(cmd.args, givenArgs);
@@ -107,14 +119,4 @@ command.help = function(context) {
   return output;
 };
 
-
-command.command = function(name, options, cb) {
-  options = options || {};
-  options.name = name;
-  options.description = options.description || "";
-  options.args = options.args || [];
-  options.options = options.options || [];
-  options.commands = options.commands || [];
-  options.action = typeof cb !== 'undefined' ? cb : null;
-  return options;
-};
+command.helpCommand = command.command('help', { description: 'display help about this program' });
