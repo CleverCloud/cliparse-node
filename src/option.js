@@ -3,80 +3,87 @@ var _ = require("lodash");
 var parsers = require("./parsers");
 var utils = require("./utils");
 
-var option = function(name, opts) {
-  var options = opts || {};
-  var names = [name].concat(options.aliases || []);
-  var metavar = options.metavar || null;
-  var parser = options.parser || parsers.stringParser;
-  var helpT = options.helpT || "";
-  var defaultValue = (typeof options.defaultValue !== 'undefined') ? options.defaultValue : null;
-  var required = options.required && !defaultValue ? true : false;
+var option = module.exports = {};
 
-  var helpUsage = function() {
-      var output = displayOptionNames(names, required, false);
-      if(metavar) output += ' ' + metavar.toUpperCase();
-      return output;
-  }();
+option.parse = function(opt, providedOptions) {
+  var result;
+  var value = _(opt.names)
+    .map(function(name) { return providedOptions[name]; })
+    .find(function(v) { return typeof v !== 'undefined'; });
 
-  var helpText = function() {
-      var output = displayOptionNames(names, required, true);
-      if(metavar) output += ' ' + metavar.toUpperCase();
-      return output + "\t\t\t\t" + helpT;
-  }();
+  if(typeof value !== 'undefined' && value !== null) {
+    result = opt.parser(value);
+  } else if(opt.default !== null || !opt.required) {
+    result = parsers.success(opt.default);
+  } else {
+    result = parsers.error("missing value");
+  }
+  result.option = opt;
 
-  return {
-    names: names,
-    required: required,
-    getValue: function(cliOpts) {
-        var value = _(names)
-            .map(function(name) { return cliOpts[name]; })
-            .find(function(v) { return typeof v !== 'undefined'; });
-      if(value) {
-        return parser(value);
-      } else if(defaultValue !== null || !required) {
-        return { success: defaultValue };
-      } else {
-        return { error: "missing value" };
-      }
-    },
-    helpText: helpText,
-    helpUsage: helpUsage
-  };
+  return result;
 };
 
-var flag = function(name, opts) {
-    var options = opts || {};
-    options.parser = parsers.booleanParser;
-    if(typeof options.defaultValue === 'undefined' && !options.required) options.defaultValue = false;
-    return option(name, options);
-};
-
-
-var parseOptions = function(options, cliOpts) {
-  var parsedOptions = _.map(options, function(option) {
-    return [option.names[0], option.getValue(cliOpts)];
+option.parseObject = function(options, providedOptions) {
+  var results = _.map(options, function(opt) {
+    return option.parse(opt, providedOptions);
   });
 
-  if(utils.areValidOptions(parsedOptions)) {
-    return {
-      success: _.object(_.map(parsedOptions, function(option) {
-        return [option[0], option[1].success];
-      }))
-    };
+  if(_.every(results, parsers.isSuccess)) {
+    return parsers.success(_.object(_.map(results, function(r) {
+      return [r.option.name, r.success];
+    })));
   } else {
-    return { errors: ""};
+    return parsers.error(_.filter(results, parsers.isError));
   }
 };
 
-var availableOptionsText = function(options) {
+
+option.help = function(opt) {
+  var output = option.displayOptionNames(opt.names, opt.required, true);
+  if(opt.metavar) output += ' ' + opt.metavar.toUpperCase();
+  return [output, opt.description];
+};
+
+option.usage = function(opt) {
+  var output = option.displayOptionNames(opt.names, opt.required, false);
+  if(opt.metavar) output += ' ' + opt.metavar.toUpperCase();
+  return output;
+};
+
+option.option = function(name, options) {
+  options = options || {};
+  options.name = name;
+  options.names = [options.name].concat(options.aliases || []);
+  options.metavar = options.metavar || null;
+  options.parser = options.parser || parsers.stringParser;
+  options.description = options.description || "";
+  options.default = (typeof options.default !== 'undefined') ? options.default : null;
+  options.required = options.required && !options.defaultValue ? true : false;
+
+  return options;
+};
+
+option.flag = function(name, options) {
+    options = options || {};
+    options.parser = parsers.booleanParser;
+    if(typeof options.default === 'undefined' && !options.required) options.default = false;
+    return option.option(name, options);
+};
+
+
+option.availableOptionsText = function(options) {
   if(_.isEmpty(options)) {
     return '';
   } else {
-    return "Available options: \n" + _.pluck(options, "helpText").join('\n');
+    return "Available options: \n" + _.map(options, function(opt) {
+      var h = option.help(opt);
+      // ToDo
+      return h[0] + '\t' + h[1];
+    }).join('\n');
   }
 };
 
-var displayOptionNames = function(names, required, allNames) {
+option.displayOptionNames = function(names, required, allNames) {
   var output;
   if(!allNames) {
     names = _.take(names, 1);
@@ -90,12 +97,4 @@ var displayOptionNames = function(names, required, allNames) {
   if(!required) output = '[' + output + ']';
 
   return output;
-};
-
-module.exports = {
-  option: option,
-  flag: flag,
-  parseOptions: parseOptions,
-  availableOptionsText: availableOptionsText,
-  displayOptionNames: displayOptionNames
 };
