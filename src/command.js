@@ -20,12 +20,12 @@ command.command = function(name, options, cb) {
   return options;
 };
 
-command.autocomplete = function(cmd, parentOptions, argv, words, index) {
+command.autocompleteFinal = function(cmd, argsLeft, argv, words, index, parentOptions) {
   var currentWord = words[index];
   var previousWord = words[index - 1];
   var availOptionNames = autocomplete.empty;
   var availOptionValues = autocomplete.empty;
-  var availArgs = autocomplete.empty;
+  var availArg = autocomplete.empty;
   var availCommands = autocomplete.empty;
 
   var allOptions = parentOptions.concat(cmd.options);
@@ -48,15 +48,30 @@ command.autocomplete = function(cmd, parentOptions, argv, words, index) {
   // Complete commands
   var commandNames = _.pluck(cmd.commands, 'name');
   availCommands = autocomplete.words(commandNames);
-  // Complete arguments
-  var argsComplete = _.map(cmd.args, function(arg) {
-    return argument.complete(arg, currentWord);
+  // Complete argument
+  var argIndex = argsLeft.length;
+  if(cmd.args[argIndex]) {
+    availArg = argument.complete(cmd.args[argIndex], currentWord);
+  }
+
+  return autocomplete.mconcat([availOptionNames, availOptionValues, availArg, availCommands]);
+}
+
+command.autocomplete = function(cmd, argsLeft, argv, words, index, parentOptions) {
+  var matchedCommand = _.find(cmd.commands, function(subcommand) {
+    return subcommand.name === _.head(argsLeft);
   });
-  availArgs = autocomplete.mconcat(argsComplete);
-
-  // ToDo manage nested completion
-
-  return autocomplete.mconcat([availOptionNames, availOptionValues, availArgs, availCommands]);
+  if(matchedCommand) {
+    return command.autocomplete(
+      matchedCommand,
+      _.drop(argsLeft, 1),
+      argv,
+      words,
+      index,
+      parentOptions.concat(cmd.options));
+  } else {
+    return command.autocompleteFinal(cmd, argsLeft, argv, words, index, parentOptions);
+  }
 };
 
 command.parseFinal = function(cmd, parentOptions, givenArgs, givenOpts) {

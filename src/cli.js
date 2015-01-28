@@ -78,8 +78,11 @@ cli.execute = function(cliApp, args, options) {
 cli.autocomplete = function(cliApp, words, index) {
   if(typeof words !== 'object') words = [words];
   var argv = minimist(words);
-  var results = command.autocomplete(cliApp, [], argv, words, index);
   var current = words[index] || '';
+  var consumedArgs = autocomplete.currentArg(words, index, argv._).consumedArgs;
+
+  var results = command.autocomplete(cliApp, _.drop(consumedArgs, 1), argv, words, index, []);
+
   console.log(autocomplete.compgen(results) + ' -- ' + current);
 };
 
