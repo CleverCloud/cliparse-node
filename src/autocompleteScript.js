@@ -16,7 +16,7 @@ autocompleteScript.bashScript = function(exec) {
 '\n'+
 '  ARGS=(--autocomplete-index $COMP_CWORD)\n'+
 '  for word in ${COMP_WORDS[@]}; do\n'+
-'    ARGS=(${ARGS[@]}  --autocomplete-words $word)\n'+
+'    ARGS=(${ARGS[@]}  --autocomplete-words="$word")\n'+
 '  done\n'+
 '\n'+
 '  COMPGENCMD=( $(' + exec + ' "${ARGS[@]}") )\n'+
