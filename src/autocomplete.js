@@ -45,7 +45,7 @@ autocomplete.directories = {
 autocomplete.mappend = function(result1, result2) {
   return {
     words: result1.words.concat(result2.words),
-    glob: result2.glob, // ToDo document
+    glob: result2.glob || result1.glob,
     files: result1.files || result2.files,
     directories: result1.directories || result2.directories
   };
