@@ -1,6 +1,7 @@
 var minimist = require('minimist');
 var test = require("tape");
 
+var cliparse = require("../src/cliparse.js");
 var autocomplete = require("../src/autocomplete.js");
 
 /*
@@ -79,4 +80,40 @@ test('current argument from COMPCWORD', function(t) {
 
   t.equal(autocomplete.currentArg(wordsComplex, 3, argsComplex).argIndex, false, 'Complex argument, after option - position');
   t.same(autocomplete.currentArg(wordsComplex, 3, argsComplex).consumedArgs, ['name'], 'Complex argument, after option - consumed args');
+});
+
+var simple = cliparse.cli({ name: "testCli"});
+var cmds = cliparse.cli({ name: "testCli", commands: [ cliparse.command("inner") ]});
+var subcmds = cliparse.cli({
+  name: "testCli",
+  commands: [ cliparse.command("number", { commands: [ cliparse.command( "add"), cliparse.command( "multiply") ] }) ]
+});
+
+test('available command paths', function(t) {
+  t.plan(3);
+
+
+  t.same(autocomplete.subpaths(simple), [[ 'help' ]], 'Top level');
+  t.same(autocomplete.subpaths(cmds), [[ 'help' ], [ 'inner' ]], 'Commands');
+  t.same(autocomplete.subpaths(subcmds), [[ 'help' ], ['number', 'add'], ['number', 'multiply']], 'Subcommands');
+
+});
+
+test('help command completion', function(t) {
+  t.plan(12);
+
+  t.same(autocomplete.autocompleteHelpCommand(simple, []).words, [], 'Top level');
+
+  t.same(autocomplete.autocompleteHelpCommand(cmds, []).words, [], 'Commands, nothing entered');
+  t.same(autocomplete.autocompleteHelpCommand(cmds, ['']).words, ['inner'], 'Commands, empty word');
+  t.same(autocomplete.autocompleteHelpCommand(cmds, ['in']).words, ['inner'], 'Commands, incomplete word');
+  t.same(autocomplete.autocompleteHelpCommand(cmds, ['inner']).words, ['inner'], 'Commands, complete word');
+
+  t.same(autocomplete.autocompleteHelpCommand(subcmds, []).words, [], 'Subcommands, nothing entered');
+  t.same(autocomplete.autocompleteHelpCommand(subcmds, ['']).words, ['number'], 'Subcommands, depth 1, empty word');
+  t.same(autocomplete.autocompleteHelpCommand(subcmds, ['nu']).words, ['number'], 'Subcommands, depth 1, incomplete word');
+  t.same(autocomplete.autocompleteHelpCommand(subcmds, ['number']).words, ['number'], 'Subcommands, depth 1, complete word');
+  t.same(autocomplete.autocompleteHelpCommand(subcmds, ['number', '']).words, ['add', 'multiply' ], 'Subcommands, depth 2, empty word');
+  t.same(autocomplete.autocompleteHelpCommand(subcmds, ['number', 'a']).words, ['add'], 'Subcommands, depth 2, incomplete word');
+  t.same(autocomplete.autocompleteHelpCommand(subcmds, ['number', 'add']).words, ['add'], 'Subcommands, depth 2, complete word');
 });

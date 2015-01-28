@@ -110,4 +110,42 @@ autocomplete.currentArg = function(words, wordIndex, args) {
     argIndex: !finalState.isOption && !finalState.wasOption ? finalState.argsIndex : false,
     consumedArgs: _.take(args, finalState.argsIndex + 1)
   };
-}
+};
+
+autocomplete.subpaths = function(cmd) {
+  if(_.isEmpty(cmd.commands)) {
+    return [];
+  } else {
+    var result = _.map(cmd.commands, function(cmd) {
+      var subpaths = autocomplete.subpaths(cmd);
+
+      if(_.isEmpty(subpaths)) {
+        return [[ cmd.name ]];
+      } else {
+        return _.map(subpaths, function(path) {
+          return [cmd.name].concat(path);
+        });
+      }
+    });
+    return _.flatten(result);
+  }
+};
+
+autocomplete.autocompleteHelpCommand = function(cmd, argsLeft) {
+  var givenPrefix = _.initial(argsLeft);
+  var currentWord = _.last(argsLeft) || '';
+  var subpaths = autocomplete.subpaths(cmd);
+  var matchingSubpaths = _.filter(subpaths, function(path) {
+    var pathPrefix = _.take(path, argsLeft.length - 1);
+    var currentPathElem = path[argsLeft.length - 1] || '';
+    return _.isEqual(pathPrefix, givenPrefix) &&
+           _.startsWith(currentPathElem, currentWord) &&
+           path[0] !== 'help';
+  });
+
+  var results = _.flatten(_.map(matchingSubpaths, function(x) {
+    return x[argsLeft.length - 1] || [];
+  }));
+
+  return autocomplete.words(_.uniq(results));
+};

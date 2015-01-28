@@ -80,8 +80,19 @@ cli.autocomplete = function(cliApp, words, index) {
   var argv = minimist(words);
   var current = words[index] || '';
   var consumedArgs = autocomplete.currentArg(words, index, argv._).consumedArgs;
+  var results;
 
-  var results = command.autocomplete(cliApp, _.drop(consumedArgs, 1), argv, words, index, []);
+  if(argv._[1] === 'help') {
+    results = autocomplete.autocompleteHelpCommand(cliApp, _.drop(consumedArgs, 2));
+  } else {
+    results = command.autocomplete(
+      cliApp,
+      _.drop(consumedArgs, 1),
+      argv,
+      words,
+      index,
+      []);
+  }
 
   console.log(autocomplete.compgen(results) + ' -- ' + current);
 };
