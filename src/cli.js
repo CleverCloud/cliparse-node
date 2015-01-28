@@ -77,6 +77,7 @@ cli.execute = function(cliApp, args, options) {
 
 cli.autocomplete = function(cliApp, words, index) {
   if(typeof words !== 'object') words = [words];
+  if(index >= words.length) words.push('');
   var argv = minimist(words);
   var current = words[index] || '';
   var consumedArgs = autocomplete.currentArg(words, index, argv._).consumedArgs;
