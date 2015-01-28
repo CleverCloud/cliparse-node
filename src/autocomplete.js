@@ -19,6 +19,29 @@ autocomplete.words = function(words) {
   return result;
 }
 
+autocomplete.glob = function(glob) {
+  return {
+    words: [],
+    glob: glob,
+    files: false,
+    directories: false
+  };
+};
+
+autocomplete.files = {
+  words: [],
+  glob: false,
+  files: true,
+  directories: false
+}
+
+autocomplete.directories = {
+  words: [],
+  glob: false,
+  files: false,
+  directories: true
+}
+
 autocomplete.mappend = function(result1, result2) {
   return {
     words: result1.words.concat(result2.words),
