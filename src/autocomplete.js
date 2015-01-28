@@ -56,10 +56,10 @@ autocomplete.mconcat = function(results) {
 };
 
 autocomplete.compgen = function(results) {
-  var wordlist = "-W $'" + results.words.join('\n') + "'";
-  var globpat = results.glob ? 'compgen -G "' + results.glob + '"' : '';
-  var files = results.files && !results.glob ? 'compgen -f' : '';
-  var directories = results.directories && !results.files && !results.glob ? 'compgen -d' : '';
+  var wordlist = !_.isEmpty(results.words) ? "-W $'" + results.words.join('\n') + "'" : '';
+  var globpat = results.glob ? "-G '" + results.glob + "'" : "";
+  var files = results.files && !results.glob ? '-f' : '';
+  var directories = results.directories && !results.files && !results.glob ? '-d' : '';
 
-  return 'compgen ' + wordlist;
+  return 'compgen ' + [wordlist, globpat, files, directories].join(' ').trim();
 };
