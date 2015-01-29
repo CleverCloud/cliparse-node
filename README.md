@@ -119,6 +119,16 @@ var testCli = cliparse.cli({
 });
 ```
 
+## Help command
+
+An help command is automatically generated, with the following syntax:
+
+```bash
+$ my-executable help <command> <subcommand> <...>
+```
+
+It can be disabled by setting `noHelpCommand` in `cliparse.cli` options.
+
 ## API
 
 ### `cli`
