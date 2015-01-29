@@ -330,13 +330,13 @@ npm test
 
 ### For `0.2.0`
 
- - Cleaner implementation of `help` command.
- - Zsh completion
- - `--version, -V` support
+ - [ ] Cleaner implementation of `help` command.
+ - [ ] Zsh completion
+ - [x] `--version, -V` support
 
 ### For `0.3.0`
 
- - Variadic arguments
- - Parse failure on unrecognized options / arguments
- - Declare flags as boolean options in minimist
- - Cleaner display of errors
+ - [ ] Variadic arguments
+ - [ ] Parse failure on unrecognized options / arguments
+ - [ ] Declare flags as boolean options in minimist
+ - [ ] Cleaner display of errors
