@@ -168,7 +168,7 @@ var fileCompleter = function() {
 };
 ```
 
-Async support is a WIP.
+The `complete` function can also return a promise for async results.
 
 ## API
 
@@ -213,8 +213,8 @@ Where name is the name of the flag, and opts can contain
  - `required`: make option mandatory
  - `default`: value used if the option is not given any value. If set,
    overrides the `required` setting.
- - `complete`: a function returning completion results for the option. Default
-   value: a function returning an empty result.
+ - `complete`: a function returning completion results for the option (or a
+   promise of results). Default value: a function returning an empty result.
 
 
 ### `flag`
@@ -328,4 +328,3 @@ npm test
 
  - Better handling of `help` command.
  - Handle zsh completion
- - Async completion results generation

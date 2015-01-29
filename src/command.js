@@ -1,4 +1,5 @@
 var _ = require("lodash");
+var Promise = require("bluebird").Promise;
 
 var argument = require("./argument");
 var autocomplete = require("./autocomplete");
@@ -54,7 +55,7 @@ command.autocompleteFinal = function(cmd, argsLeft, argv, words, index, parentOp
     availArg = argument.complete(cmd.args[argIndex], currentWord);
   }
 
-  return autocomplete.mconcat([availOptionNames, availOptionValues, availArg, availCommands]);
+  return Promise.all([availOptionNames, availOptionValues, availArg, availCommands]).then(autocomplete.mconcat);
 }
 
 command.autocomplete = function(cmd, argsLeft, argv, words, index, parentOptions) {

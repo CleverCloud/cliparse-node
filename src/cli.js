@@ -1,4 +1,5 @@
 var _ = require("lodash");
+var Promise = require("bluebird").Promise;
 var minimist = require("minimist");
 
 var argument = require("./argument");
@@ -84,7 +85,7 @@ cli.autocomplete = function(cliApp, words, index) {
   var results;
 
   if(argv._[1] === 'help') {
-    results = autocomplete.autocompleteHelpCommand(cliApp, _.drop(consumedArgs, 2));
+    results = Promise.resolve(autocomplete.autocompleteHelpCommand(cliApp, _.drop(consumedArgs, 2)));
   } else {
     results = command.autocomplete(
       cliApp,
@@ -95,7 +96,9 @@ cli.autocomplete = function(cliApp, words, index) {
       []);
   }
 
-  console.log(autocomplete.compgen(results, current));
+  results.then(function(rs) {
+    return autocomplete.compgen(rs, current);
+  }).then(console.log);
 };
 
 cli.parse = function(cliApp, argv) {
