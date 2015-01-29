@@ -46,15 +46,15 @@ test('compgen output', function(t) {
   var globAndFile = autocomplete.mappend(glob, files);
   var globAndDirectory = autocomplete.mappend(glob, directories);
 
-  t.equal(autocomplete.compgen(ws), "compgen -W $'test\nyolo'", 'Complete words');
-  t.equal(autocomplete.compgen(glob), "compgen -G '*.log'", 'Complete glob');
-  t.equal(autocomplete.compgen(directories), "compgen -d", 'Complete directories');
-  t.equal(autocomplete.compgen(files), "compgen -f", 'Complete files');
+  t.equal(autocomplete.compgen(ws, ''), "compgen -W $'test\nyolo' -- ", 'Complete words');
+  t.equal(autocomplete.compgen(glob, ''), "compgen -G '*.log' -- ", 'Complete glob');
+  t.equal(autocomplete.compgen(directories, ''), "compgen -d -- ", 'Complete directories');
+  t.equal(autocomplete.compgen(files, ''), "compgen -f -- ", 'Complete files');
 
-  t.equal(autocomplete.compgen(globAndFile), "compgen -G '*.log'", 'Glob overrides files');
-  t.equal(autocomplete.compgen(globAndDirectory), "compgen -G '*.log'", 'Glob overrides directories');
+  t.equal(autocomplete.compgen(globAndFile, ''), "compgen -G '*.log' -- ", 'Glob overrides files');
+  t.equal(autocomplete.compgen(globAndDirectory, ''), "compgen -G '*.log' -- ", 'Glob overrides directories');
 
-  t.equal(autocomplete.compgen(combined), "compgen -W $'test\nyolo' -G '*.log'", 'Complete all');
+  t.equal(autocomplete.compgen(combined, ''), "compgen -W $'test\nyolo' -G '*.log' -- ", 'Complete all');
 });
 
 test('current argument from COMPCWORD', function(t) {

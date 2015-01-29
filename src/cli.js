@@ -95,7 +95,7 @@ cli.autocomplete = function(cliApp, words, index) {
       []);
   }
 
-  console.log(autocomplete.compgen(results) + ' -- ' + current);
+  console.log(autocomplete.compgen(results, current));
 };
 
 cli.parse = function(cliApp, argv) {

@@ -55,13 +55,13 @@ autocomplete.mconcat = function(results) {
   return _.reduce(results, autocomplete.mappend, _.clone(autocomplete.empty));
 };
 
-autocomplete.compgen = function(results) {
+autocomplete.compgen = function(results, current) {
   var wordlist = !_.isEmpty(results.words) ? "-W $'" + results.words.join('\n') + "'" : '';
   var globpat = results.glob ? "-G '" + results.glob + "'" : "";
   var files = results.files && !results.glob ? '-f' : '';
   var directories = results.directories && !results.files && !results.glob ? '-d' : '';
 
-  return 'compgen ' + [wordlist, globpat, files, directories].join(' ').trim();
+  return 'compgen ' + [wordlist, globpat, files, directories].join(' ').trim() + ' -- ' + current;
 };
 
 autocomplete.currentArg = function(words, wordIndex, args) {
