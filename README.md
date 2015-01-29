@@ -324,7 +324,17 @@ Make sure you don't break anything.
 npm test
 ```
 
-## ToDo list
+## ToDo
 
- - Better handling of `help` command.
- - Handle zsh completion
+### For `0.2.0`
+
+ - Cleaner implementation of `help` command.
+ - Zsh completion
+ - `--version, -V` support
+
+### For `0.3.0`
+
+ - Variadic arguments
+ - Parse failure on unrecognized options / arguments
+ - Declare flags as boolean options in minimist
+ - Cleaner display of errors
