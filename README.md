@@ -182,6 +182,8 @@ Where opts can contain
 
  - `name`: the name of the executable (if not provided, `process.argv` is used)
  - `description`: a one-line description of the executable
+ - `version`: the version number of the executable (displayed by `--version`.
+   Default value: `null`
  - `options`: array of top-level options (constructed with `option` or `flag`). Default
    value: `[]`.
  - `commands`: array of commands (constructed with `command`). Default value: `[]`

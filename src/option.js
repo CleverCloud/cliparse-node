@@ -102,6 +102,7 @@ option.displayOptionNames = function(names, required, allNames) {
 };
 
 option.helpOption = option.flag('help', { aliases: ['?'], description: 'Display help about this program' });
+option.versionOption = option.flag('version', { aliases: ['V'], description: 'Display the version of this program' });
 
 option.complete = function(opt, word) {
   return opt.complete(word);

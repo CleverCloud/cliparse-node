@@ -1,6 +1,6 @@
 var _ = require("lodash");
-var Promise = require("bluebird").Promise;
 var minimist = require("minimist");
+var Promise = require("bluebird").Promise;
 
 var argument = require("./argument");
 var autocomplete = require("./autocomplete");
@@ -13,8 +13,9 @@ var utils = require("./utils");
 var cli = module.exports = {};
 
 cli.cli = function(options, cb) {
+  options.version = typeof options.version !== 'undefined' ? options.version : null;
   options.noHelpCommand = options.noHelpCommand || false;
-  options.options = [ option.helpOption ].concat(options.options || []);
+  options.options = [ option.helpOption, option.versionOption ].concat(options.options || []);
 
   if(!options.noHelpCommand) {
     options.commands = [ command.helpCommand ].concat(options.commands || []);
@@ -26,6 +27,10 @@ cli.cli = function(options, cb) {
     cb
   );
 }
+
+cli.displayVersion = function(cli) {
+  console.log(cli.version !== null ? cli.version : 'N/A');
+};
 
 cli.displayUsage = function(cliApp, givenArgs) {
   var context = _.reduce(givenArgs, function(acc, arg) {
@@ -120,6 +125,8 @@ cli.parse = function(cliApp, argv) {
     cli.displayUsage(cliApp, args);
   } else if(!cliApp.noHelpCommand && args[0] === 'help') {
     cli.displayUsage(cliApp, _.drop(args, 1));
+  } else if(option.parse(option.versionOption, options).success === true) {
+    cli.displayVersion(cliApp);
   } else if(options["bash-autocomplete-script"]) {
     console.log(autocompleteScript.bashScript(options["bash-autocomplete-script"]));
   } else if(options["autocomplete-words"] && options["autocomplete-index"]) {

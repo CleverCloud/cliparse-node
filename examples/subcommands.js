@@ -25,6 +25,7 @@ var intArgument = cliparse.argument(
 
 var testCli = cliparse.cli({
   name: "testCli",
+  version: '0.1.0',
   description: "Simple CLI written for the sake of the example",
   commands: [
     cliparse.command(
