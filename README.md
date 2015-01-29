@@ -129,6 +129,47 @@ $ my-executable help <command> <subcommand> <...>
 
 It can be disabled by setting `noHelpCommand` in `cliparse.cli` options.
 
+## Autocompletion
+
+CLI parse allows you to generate autocompletion scripts for bash and zsh (work
+in progress). Generate the script in your npm post-install hook and add it to
+your users shell completion scripts to enable it.
+
+It supports completion on commands, options and arguments, as well as on the
+help command. Completion on options and arguments are configurable: you can
+declare your own completion methods.
+
+### Bash
+
+ToDo `package.json` example
+
+### ZSH
+
+ToDo `package.json` example
+
+### Custom completion
+
+You can have custom completion for option or arguments, by passing a custom
+complete function (see <#API>).
+
+For instance to complete on a list of colors:
+
+```javascript
+var colorCompleter = function() {
+  return autocomplete.words(['mauve', 'blue', 'yellow', 'purple', 'parabolic']);
+};
+```
+
+To complete on a list of files:
+
+```javascript
+var fileCompleter = function() {
+  return autocomplete.files;
+};
+```
+
+Async support is a WIP.
+
 ## API
 
 ### `cli`
@@ -172,6 +213,8 @@ Where name is the name of the flag, and opts can contain
  - `required`: make option mandatory
  - `default`: value used if the option is not given any value. If set,
    overrides the `required` setting.
+ - `complete`: a function returning completion results for the option. Default
+   value: a function returning an empty result.
 
 
 ### `flag`
@@ -199,7 +242,8 @@ Where opts can contain
    value: `stringParser`
  - `description`: a single-line description of what the argument is about.
  - `default`: value used if the argument is not given any value
-
+ - `complete`: a function returning completion results for the argument. Default
+   value: a function returning an empty result.
 
 ### `command`
 
@@ -250,7 +294,27 @@ var colorParser = function(input) {
 }
 ```
 
+### Autocompletion helpers
 
+#### Autocompletion results
+
+`autocomplete.empty`: no results
+
+`autocomplete.words([…])`: list of words
+
+`autocomplete.glob(<glob>)`: files matching glob (eg. `*.log`).
+
+`autocomplete.files`: files
+
+`autocomplete.directories`: directories
+
+You can combine autocompletion results:
+
+`autocomplete.mappend(<result1, result2>)`: combine results from `result1` and
+`result2`. As globs can't be combined, the last one wins (if set).
+
+`autocomplete.mconcat([ <results> ])`: reduce a list of result to a composite
+result with `mappend`. If the list is empty, then `empty` is returned.
 
 ## Contributing
 
@@ -262,4 +326,6 @@ npm test
 
 ## ToDo list
 
- - Generate autocompletion script.
+ - Better handling of `help` command.
+ - Handle zsh completion
+ - Async completion results generation
