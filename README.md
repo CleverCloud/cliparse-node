@@ -150,7 +150,7 @@ ToDo `package.json` example
 ### Custom completion
 
 You can have custom completion for option or arguments, by passing a custom
-complete function (see <#API>).
+complete function (see [API](#option)).
 
 For instance to complete on a list of colors:
 
