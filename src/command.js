@@ -51,8 +51,8 @@ command.autocompleteFinal = function(cmd, argsLeft, argv, words, index, parentOp
   availCommands = autocomplete.words(commandNames);
   // Complete argument
   var argIndex = argsLeft.length;
-  if(cmd.args[argIndex]) {
-    availArg = argument.complete(cmd.args[argIndex], currentWord);
+  if(cmd.args[argIndex - 1]) {
+    availArg = argument.complete(cmd.args[argIndex - 1], currentWord);
   }
 
   return Promise.all([availOptionNames, availOptionValues, availArg, availCommands]).then(autocomplete.mconcat);
