@@ -127,7 +127,7 @@ An help command is automatically generated, with the following syntax:
 $ my-executable help <command> <subcommand> <...>
 ```
 
-It can be disabled by setting `noHelpCommand` in `cliparse.cli` options.
+It can be disabled by setting `helpCommand` to `false` in `cliparse.cli` options.
 
 ## Autocompletion
 
@@ -189,8 +189,7 @@ Where opts can contain
  - `commands`: array of commands (constructed with `command`). Default value: `[]`
  - `args`: array of arguments (constructed with `argument`). If your app
    doesn't have commands.
- - `noHelpCommand`: boolean used to disable help command, useful for apps with
-   no subcommands. Default value: `false`.
+ - `helpCommand`: Generate a `help` command. Default value: `true`.
 
 If your application is not solely made of commands, you can pass an action
 callback. If you don't give a callback, calling your application without any
@@ -330,7 +329,7 @@ npm test
 
 ### For `0.2.0`
 
- - [ ] Cleaner implementation of `help` command.
+ - [x] Cleaner implementation of `help` command.
  - [ ] Zsh completion
  - [x] `--version, -V` support
 

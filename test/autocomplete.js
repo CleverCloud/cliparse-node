@@ -93,9 +93,9 @@ test('available command paths', function(t) {
   t.plan(3);
 
 
-  t.same(autocomplete.subpaths(simple), [[ 'help' ]], 'Top level');
-  t.same(autocomplete.subpaths(cmds), [[ 'help' ], [ 'inner' ]], 'Commands');
-  t.same(autocomplete.subpaths(subcmds), [[ 'help' ], ['number', 'add'], ['number', 'multiply']], 'Subcommands');
+  t.same(autocomplete.subpaths(simple), [], 'Top level');
+  t.same(autocomplete.subpaths(cmds), [[ 'inner' ]], 'Commands');
+  t.same(autocomplete.subpaths(subcmds), [['number', 'add'], ['number', 'multiply']], 'Subcommands');
 
 });
 

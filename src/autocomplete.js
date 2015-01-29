@@ -113,10 +113,15 @@ autocomplete.currentArg = function(words, wordIndex, args) {
 };
 
 autocomplete.subpaths = function(cmd) {
-  if(_.isEmpty(cmd.commands)) {
+  var subcmds = cmd.commands;
+  if(cmd.topLevel) {
+      subcmds = _.reject(cmd.commands, function(c) { return c.helpCommand; });
+  }
+
+  if(_.isEmpty(subcmds)) {
     return [];
   } else {
-    var result = _.map(cmd.commands, function(cmd) {
+    var result = _.map(subcmds, function(cmd) {
       var subpaths = autocomplete.subpaths(cmd);
 
       if(_.isEmpty(subpaths)) {
@@ -139,8 +144,7 @@ autocomplete.autocompleteHelpCommand = function(cmd, argsLeft) {
     var pathPrefix = _.take(path, argsLeft.length - 1);
     var currentPathElem = path[argsLeft.length - 1] || '';
     return _.isEqual(pathPrefix, givenPrefix) &&
-           _.startsWith(currentPathElem, currentWord) &&
-           path[0] !== 'help';
+           _.startsWith(currentPathElem, currentWord);
   });
 
   var results = _.flatten(_.map(matchingSubpaths, function(x) {

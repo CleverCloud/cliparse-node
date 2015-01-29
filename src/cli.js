@@ -13,11 +13,12 @@ var utils = require("./utils");
 var cli = module.exports = {};
 
 cli.cli = function(options, cb) {
+  options.topLevel = true;
   options.version = typeof options.version !== 'undefined' ? options.version : null;
-  options.noHelpCommand = options.noHelpCommand || false;
+  options.helpCommand = typeof options.helpCommand !== 'undefined' ? options.helpCommand : true;
   options.options = [ option.helpOption, option.versionOption ].concat(options.options || []);
 
-  if(!options.noHelpCommand) {
+  if(options.helpCommand) {
     options.commands = [ command.helpCommand ].concat(options.commands || []);
   }
 
@@ -89,7 +90,7 @@ cli.autocomplete = function(cliApp, words, index) {
   var consumedArgs = autocomplete.currentArg(words, index, argv._).consumedArgs;
   var results;
 
-  if(argv._[1] === 'help') {
+  if(argv._[1] === 'help' && cliApp.helpCommand) {
     results = Promise.resolve(autocomplete.autocompleteHelpCommand(cliApp, _.drop(consumedArgs, 2)));
   } else {
     results = command.autocomplete(

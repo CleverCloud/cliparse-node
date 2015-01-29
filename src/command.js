@@ -174,4 +174,8 @@ command.help = function(context) {
   return output;
 };
 
-command.helpCommand = command.command('help', { description: 'display help about this program' });
+command.helpCommand = function() {
+  var c = command.command('help', { description: 'display help about this program' });
+  c.helpCommand = true;
+  return c;
+}();
