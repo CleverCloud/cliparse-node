@@ -112,7 +112,7 @@ autocomplete.currentArg = function(words, wordIndex, args) {
   };
 };
 
-autocomplete.subpaths = function(cmd) {
+autocomplete.commandPaths = function(cmd) {
   var subcmds = cmd.commands;
   if(cmd.topLevel) {
       subcmds = _.reject(cmd.commands, function(c) { return c.helpCommand; });
@@ -122,18 +122,26 @@ autocomplete.subpaths = function(cmd) {
     return [];
   } else {
     var result = _.map(subcmds, function(cmd) {
-      var subpaths = autocomplete.subpaths(cmd);
+      var subpaths = autocomplete.commandPaths(cmd);
 
       if(_.isEmpty(subpaths)) {
-        return [[ cmd.name ]];
+        return [[ cmd ]];
       } else {
         return _.map(subpaths, function(path) {
-          return [cmd.name].concat(path);
+          return [cmd].concat(path);
         });
       }
     });
     return _.flatten(result);
   }
+};
+
+autocomplete.subpaths = function(cmd) {
+  var cmdPaths = autocomplete.commandPaths(cmd);
+
+  return _.map(cmdPaths, function(path) {
+    return _.pluck(path, 'name');
+  });
 };
 
 autocomplete.autocompleteHelpCommand = function(cmd, argsLeft) {
