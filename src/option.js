@@ -72,6 +72,12 @@ option.flag = function(name, options) {
     return option.option(name, options);
 };
 
+option.optionNames = function(names) {
+  return _.map(names, function(name) {
+    if(name.length > 1) return '--' + name;
+    else return '-' + name;
+  });
+};
 
 option.availableOptionsText = function(options) {
   if(_.isEmpty(options)) {
@@ -91,10 +97,7 @@ option.displayOptionNames = function(names, required, allNames) {
     names = _.take(names, 1);
   };
 
-  output =  _.map(names, function(name) {
-    if(name.length > 1) return '--' + name;
-    else return '-' + name;
-  }).join(", ");
+  output = option.optionNames(names).join(", ");
 
   if(!required) output = '[' + output + ']';
 
@@ -109,9 +112,5 @@ option.complete = function(opt, word) {
 };
 
 option.completeName = function(opt) {
-  var names = _.map(opt.names, function(name) {
-    if(name.length > 1) return '--' + name;
-    else return '-' + name;
-  });
-  return autocomplete.words(names);
+  return autocomplete.words(option.optionNames(opt.names));
 };

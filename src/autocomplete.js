@@ -113,41 +113,32 @@ autocomplete.currentArg = function(words, wordIndex, args) {
 };
 
 autocomplete.commandPaths = function(cmd) {
-  var subcmds = cmd.commands;
-  if(cmd.topLevel) {
-      subcmds = _.reject(cmd.commands, function(c) { return c.helpCommand; });
-  }
+  var childPaths = _.flatten(_.map(cmd.commands, function(c) {
+    return autocomplete.commandPaths(c);
+  }));
 
-  if(_.isEmpty(subcmds)) {
-    return [];
-  } else {
-    var result = _.map(subcmds, function(cmd) {
-      var subpaths = autocomplete.commandPaths(cmd);
+  var res =  _.map(childPaths, function(p) {
+    return [ cmd ].concat(p);
+  });
 
-      if(_.isEmpty(subpaths)) {
-        return [[ cmd ]];
-      } else {
-        return _.map(subpaths, function(path) {
-          return [cmd].concat(path);
-        });
-      }
-    });
-    return _.flatten(result);
-  }
+  return [[cmd]].concat(res);
 };
 
-autocomplete.subpaths = function(cmd) {
+autocomplete.helpCommandSubpaths = function(cmd) {
   var cmdPaths = autocomplete.commandPaths(cmd);
+  var completableCommands = _.filter(cmdPaths, function(p) {
+    return p.length > 1 && !p[1].helpCommand;
+  });
 
-  return _.map(cmdPaths, function(path) {
-    return _.pluck(path, 'name');
+  return _.map(completableCommands, function(path) {
+    return _.pluck(_.drop(path, 1), 'name');
   });
 };
 
 autocomplete.autocompleteHelpCommand = function(cmd, argsLeft) {
   var givenPrefix = _.initial(argsLeft);
   var currentWord = _.last(argsLeft) || '';
-  var subpaths = autocomplete.subpaths(cmd);
+  var subpaths = autocomplete.helpCommandSubpaths(cmd);
   var matchingSubpaths = _.filter(subpaths, function(path) {
     var pathPrefix = _.take(path, argsLeft.length - 1);
     var currentPathElem = path[argsLeft.length - 1] || '';
