@@ -49,7 +49,8 @@ command.autocompleteFinal = function(cmd, argsLeft, argv, words, index, parentOp
 
   // Complete commands
   var commandNames = _.pluck(cmd.commands, 'name');
-  availCommands = autocomplete.words(commandNames);
+  var commandAliases = _(cmd.commands).pluck('aliases').flatten().value();
+  availCommands = autocomplete.words(commandNames.concat(commandAliases));
   // Complete argument
   var argIndex = argsLeft.length;
   if(cmd.args[argIndex - 1]) {
@@ -61,7 +62,8 @@ command.autocompleteFinal = function(cmd, argsLeft, argv, words, index, parentOp
 
 command.autocomplete = function(cmd, argsLeft, argv, words, index, parentOptions) {
   var matchedCommand = _.find(cmd.commands, function(subcommand) {
-    return subcommand.name === _.head(argsLeft);
+    var givenName = _.head(argsLeft);
+    return subcommand.name === givenName || _.includes(subcommand.aliases, givenName);
   });
   if(matchedCommand) {
     return command.autocomplete(

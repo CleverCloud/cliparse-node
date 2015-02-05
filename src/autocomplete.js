@@ -120,11 +120,21 @@ autocomplete.subpaths = function(cmd) {
       var subpaths = autocomplete.subpaths(cmd);
 
       if(_.isEmpty(subpaths)) {
-        return [[ cmd.name ]];
+        var comp = [[ cmd.name ]];
+        if(_.isEmpty(cmd.aliases)) {
+          return comp;
+        } else {
+          return comp.concat(cmd.aliases.map(function(a) { return [a]; }));
+        }
       } else {
-        return _.map(subpaths, function(path) {
-          return [cmd.name].concat(path);
-        });
+        return _(subpaths).map(function(path) {
+          var comp = [[cmd.name].concat(path)];
+          if(_.isEmpty(cmd.aliases)) {
+            return comp;
+          } else {
+            return comp.concat(cmd.aliases.map(function(a) { return [a].concat(path); }));
+          }
+        }).flatten().value();
       }
     });
     return _.flatten(result);

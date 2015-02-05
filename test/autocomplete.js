@@ -86,7 +86,7 @@ var simple = cliparse.cli({ name: "testCli"});
 var cmds = cliparse.cli({ name: "testCli", commands: [ cliparse.command("inner") ]});
 var subcmds = cliparse.cli({
   name: "testCli",
-  commands: [ cliparse.command("number", { commands: [ cliparse.command( "add"), cliparse.command( "multiply") ] }) ]
+  commands: [ cliparse.command("number", { commands: [ cliparse.command( "add"), cliparse.command( "multiply", { aliases: [ "times" ] }) ] }) ]
 });
 
 test('available command paths', function(t) {
@@ -95,7 +95,7 @@ test('available command paths', function(t) {
 
   t.same(autocomplete.subpaths(simple), [[ 'help' ]], 'Top level');
   t.same(autocomplete.subpaths(cmds), [[ 'help' ], [ 'inner' ]], 'Commands');
-  t.same(autocomplete.subpaths(subcmds), [[ 'help' ], ['number', 'add'], ['number', 'multiply']], 'Subcommands');
+  t.same(autocomplete.subpaths(subcmds), [[ 'help' ], ['number', 'add'], ['number', 'multiply'], ['number', 'times']], 'Subcommands');
 
 });
 
@@ -113,7 +113,7 @@ test('help command completion', function(t) {
   t.same(autocomplete.autocompleteHelpCommand(subcmds, ['']).words, ['number'], 'Subcommands, depth 1, empty word');
   t.same(autocomplete.autocompleteHelpCommand(subcmds, ['nu']).words, ['number'], 'Subcommands, depth 1, incomplete word');
   t.same(autocomplete.autocompleteHelpCommand(subcmds, ['number']).words, ['number'], 'Subcommands, depth 1, complete word');
-  t.same(autocomplete.autocompleteHelpCommand(subcmds, ['number', '']).words, ['add', 'multiply' ], 'Subcommands, depth 2, empty word');
+  t.same(autocomplete.autocompleteHelpCommand(subcmds, ['number', '']).words, ['add', 'multiply', 'times' ], 'Subcommands, depth 2, empty word');
   t.same(autocomplete.autocompleteHelpCommand(subcmds, ['number', 'a']).words, ['add'], 'Subcommands, depth 2, incomplete word');
   t.same(autocomplete.autocompleteHelpCommand(subcmds, ['number', 'add']).words, ['add'], 'Subcommands, depth 2, complete word');
 });
