@@ -9,6 +9,7 @@ var command = require("./command");
 var option = require("./option");
 var parsers = require("./parsers");
 var utils = require("./utils");
+var zshAutocomplete = require("./zshAutocomplete");
 
 var cli = module.exports = {};
 
@@ -107,6 +108,16 @@ cli.autocomplete = function(cliApp, words, index) {
   }).then(console.log);
 };
 
+cli.autocompleteZshStatic = function(cliApp, words, index) {
+  if(typeof words !== 'object') words = [words];
+  if(index >= words.length) words.push('');
+  var argv = minimist(words);
+  var current = words[index] || '';
+  var consumedArgs = autocomplete.currentArg(words, index, argv._).consumedArgs;
+
+  console.log(_.initial(consumedArgs).join('_'));
+};
+
 cli.parse = function(cliApp, argv) {
   argv = (typeof argv === "undefined") ? process.argv : argv;
 
@@ -128,6 +139,10 @@ cli.parse = function(cliApp, argv) {
     cli.displayUsage(cliApp, _.drop(args, 1));
   } else if(option.parse(option.versionOption, options).success === true) {
     cli.displayVersion(cliApp);
+  } else if(options["zsh-autocomplete-script"]) {
+    console.log(zshAutocomplete.script(cliApp, options["zsh-autocomplete-script"]));
+  } else if(options["zsh-static"] && options["autocomplete-words"] && options["autocomplete-index"]) {
+    cli.autocompleteZshStatic(cliApp, options["autocomplete-words"], options["autocomplete-index"]);
   } else if(options["bash-autocomplete-script"]) {
     console.log(autocompleteScript.bashScript(options["bash-autocomplete-script"]));
   } else if(options["autocomplete-words"] && options["autocomplete-index"]) {

@@ -1,4 +1,5 @@
 var _ = require("lodash");
+var p = require("path");
 
 var autocomplete = require("./autocomplete.js");
 var option = require("./option.js");
@@ -8,7 +9,7 @@ var zshAutocomplete = module.exports = {};
 zshAutocomplete.optionLine = function(opt) {
   var names = option.optionNames(opt.names);
 
-  return "    '(" + names.join(' ') + ")'{" + names.join(',') + "}'" + opt.description + "'";
+  return "    '(" + names.join(' ') + ")'{" + names.join(',') + "}'[" + opt.description + "]'";
 };
 
 zshAutocomplete.optionGroup = function(name, options) {
@@ -36,7 +37,7 @@ zshAutocomplete.argumentsCaseBranch = function(path) {
 
   return '    ' +name + ')\n' +
     '      _arguments -s : \\\n' +
-    '        ${' + name + '}' + '\n' +
+    '        ${' + name + '_arguments}' + '\n' +
     '      ;;';
 };
 
@@ -65,7 +66,7 @@ zshAutocomplete.completeArgumentsFunction = function(cmd) {
 };
 
 zshAutocomplete.commandLine = function(cmd) {
-  return '    ' + cmd.name + ":" + cmd.description;
+  return "    '" + cmd.name + ":" + cmd.description + "'";
 };
 
 zshAutocomplete.commandGroup = function(name, commands) {
@@ -121,17 +122,19 @@ zshAutocomplete.completeCommandsFunction = function(cmd) {
     '}\n';
 };
 
-zshAutocomplete.mainFunction = function(name) {
+zshAutocomplete.mainFunction = function(name, execPath) {
   return '_' + name + '() {\n' +
-    '  if (( CURRENT > 2 )); then\n' +
-    '      local cmd="${words[2]}"\n' +
-    '      curcontext="${curcontext%:*:*}:commands-${cmd}"\n' +
-    '      (( CURRENT-- ))\n' +
-    '      shift words\n' +
-    '      _commands_complete_arguments "${cmd}"\n' +
-    '  else\n' +
-    '      _commands_complete_subcommands\n' +
-    '  fi\n' +
+    '  local args cur static_code\n'+
+    '\n'+
+    '  cur=${words[CURRENT]};\n'+
+    '\n'+
+    '  args=(--autocomplete-index $CURRENT)\n'+
+    '  for word in ${words[@]}; do\n'+
+    '    args=(${args[@]}  --autocomplete-words="$word")\n'+
+    '  done\n'+
+    '  static_code = $('+ execPath +' ${args[@]})\n' +
+    '  _testCli_complete_arguments "$static_code"\n' +
+    '  _testCli_complete_commands "$static_code"\n' +
     '}';
 };
 
@@ -143,10 +146,14 @@ zshAutocomplete.call = function(name) {
   return '_' + name + '"${@}" \n';
 };
 
-zshAutocomplete.script = function(cmd) {
-  return zshAutocomplete.header(cmd.name) + '\n\n' +
+zshAutocomplete.script = function(cmd, exec) {
+  var fname = p.basename(exec, ".js");
+  var name = p.basename(exec);
+  var path = p.normalize(exec);
+
+  return zshAutocomplete.header(name) + '\n\n' +
     zshAutocomplete.completeArgumentsFunction(cmd) + '\n\n' +
     zshAutocomplete.completeCommandsFunction(cmd) + '\n\n' +
-    zshAutocomplete.mainFunction(cmd.name) + '\n\n' +
-    zshAutocomplete.call(cmd.name);
+    zshAutocomplete.mainFunction(fname, path) + '\n\n' +
+    zshAutocomplete.call(fname);
 };
