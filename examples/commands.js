@@ -25,6 +25,7 @@ var testCli = cliparse.cli({
     cliparse.command(
       "echo",
       { description: "display the given value",
+        aliases: [ "print" ],
         args: [ cliparse.argument("value", { description: "simple value" })],
         options: [ cliparse.flag("reverse", { aliases: ["r"], description: "reverse the value"}) ]
       },

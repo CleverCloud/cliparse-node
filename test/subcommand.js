@@ -23,6 +23,19 @@ test('minimal subcommand use case', function(t) {
     t.equal(_.last(r.context).name, 'nested', 'correct subcommand parse');
 });
 
+test('minimal subcommand with alias', function(t) {
+    t.plan(3);
+    var topCommand = cliparse.command('top', {
+      commands: [ cliparse.command('nested', { aliases: ["sub"] }) ]
+    });
+
+    var r = command.parse(topCommand, [], ['sub'], {});
+
+    t.equal(r.error, undefined, 'parse must succeed');
+    t.equal(r.context.length, 2, 'subcommand parse');
+    t.equal(_.last(r.context).name, 'nested', 'correct subcommand parse');
+});
+
 test('apply main command in no subcommand matches', function(t) {
     t.plan(3);
     var topCommand = cliparse.command('top', {
