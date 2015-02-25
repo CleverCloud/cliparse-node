@@ -139,13 +139,31 @@ It supports completion on commands, options and arguments, as well as on the
 help command. Completion on options and arguments are configurable: you can
 declare your own completion methods.
 
+All the completion logic is handled within your app, so it will work with
+dynamically defined commands.
+
 ### Bash
 
-ToDo `package.json` example
+Generate the completion script and put it in bash completion dir:
+
+```bash
+$ my-executable --bash-autocomplete-script /complete/path/to/my-executable > ~/.bash_completion.d/my-executable
+```
+
+Normally `.bash_completion.d` is automatically sourced. You can put the file
+where you want and source it manually.
 
 ### ZSH
 
-ToDo `package.json` example
+Generate the completion script and put it in zsh completion dir:
+
+```bash
+$ my-executable --zsh-autocomplete-script /complete/path/to/my-executable > ~/.zsh.d/completion/_my-executable
+```
+
+The file name **must** be `_my-executable` (if your executable is named
+`my-executable`). You can put the file where you want as long as it's in a
+directory listed in `$fpath`.
 
 ### Custom completion
 
@@ -330,7 +348,7 @@ npm test
 ### For `0.2.0`
 
  - [x] Cleaner implementation of `help` command.
- - [ ] Minimal ZSH completion
+ - [x] Minimal ZSH completion
  - [x] `--version, -V` support
 
 ### For `0.3.0`
