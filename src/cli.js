@@ -130,6 +130,8 @@ cli.parse = function(cliApp, argv) {
     cli.displayVersion(cliApp);
   } else if(options["bash-autocomplete-script"]) {
     console.log(autocompleteScript.bashScript(options["bash-autocomplete-script"]));
+  } else if(options["zsh-autocomplete-script"]) {
+    console.log(autocompleteScript.bashScript(options["zsh-autocomplete-script"], true));
   } else if(options["autocomplete-words"] && options["autocomplete-index"]) {
     cli.autocomplete(cliApp, options["autocomplete-words"], options["autocomplete-index"]);
   } else {
