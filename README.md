@@ -330,7 +330,7 @@ npm test
 ### For `0.2.0`
 
  - [x] Cleaner implementation of `help` command.
- - [ ] Zsh completion
+ - [ ] Minimal ZSH completion
  - [x] `--version, -V` support
 
 ### For `0.3.0`
@@ -339,3 +339,7 @@ npm test
  - [ ] Parse failure on unrecognized options / arguments
  - [ ] Declare flags as boolean options in minimist
  - [ ] Cleaner display of errors
+
+### Later
+
+ - [ ] Dedicated ZSH completion (help welcome :-])
