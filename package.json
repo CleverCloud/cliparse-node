@@ -13,7 +13,7 @@
     "tap-spec": "^2.1.2"
   },
   "scripts": {
-    "test": "node test/main.js | ./node_modules/tap-spec/bin/cmd.js"
+    "test": "node test/main.js | node node_modules/tap-spec/bin/cmd.js"
   },
   "author": "Clément Delafargue <clement@delafargue.name>",
   "license": "MIT",

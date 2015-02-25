@@ -27,7 +27,7 @@ cli.cli = function(options, cb) {
     options,
     cb
   );
-}
+};
 
 cli.displayVersion = function(cli) {
   console.log(cli.version !== null ? cli.version : 'N/A');
@@ -116,7 +116,8 @@ cli.parse = function(cliApp, argv) {
   var options = _.omit(cliValues, "_");
   var args = cliValues._;
 
-  if(args[0] === "node") {
+  // check the command is launched via the node interpreter (+ ensure windows compat)
+  if (args[0] === "node" || args[0] === "node.exe") {
     args = _.drop(args, 2);
   } else {
     args = _.drop(args, 1);
