@@ -116,8 +116,8 @@ cli.parse = function(cliApp, argv) {
   var options = _.omit(cliValues, "_");
   var args = cliValues._;
 
-  // check the command is launch via the node interpreter (+ ensure windows compat)
-  if (args[0].match(/node[\.exe]*$/)) {
+  // check the command is launched via the node interpreter (+ ensure windows compat)
+  if (args[0] === "node" || args[0] === "node.exe") {
     args = _.drop(args, 2);
   } else {
     args = _.drop(args, 1);
