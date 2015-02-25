@@ -10,6 +10,7 @@ option.option = function(name, options) {
   options = options || {};
   options.name = name;
   options.names = [options.name].concat(options.aliases || []);
+  options.expects_value = (typeof options.expects_value !== 'undefined') ? false : true;
   options.metavar = options.metavar || null;
   options.parser = options.parser || parsers.stringParser;
   options.description = options.description || "";
@@ -67,6 +68,7 @@ option.usage = function(opt) {
 
 option.flag = function(name, options) {
     options = options || {};
+    options.expects_value = false;
     options.parser = parsers.booleanParser;
     if(typeof options.default === 'undefined' && !options.required) options.default = false;
     return option.option(name, options);

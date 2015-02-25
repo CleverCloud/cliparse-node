@@ -234,11 +234,14 @@ Where name is the name of the flag, and opts can contain
    overrides the `required` setting.
  - `complete`: a function returning completion results for the option (or a
    promise of results). Default value: a function returning an empty result.
+ - `expects_value`: does the option expect a value? Default: true. Rather than
+   setting it yourself, use `flag`.
 
 
 ### `flag`
 
-Shorthand for flags (ie options with boolean values, defaulting to `false`)
+Shorthand for flags (ie options with boolean values, defaulting to `false`,
+doesn't expect a value)
 
 ```javascript
 flag(name, opts);
@@ -347,9 +350,9 @@ npm test
 
 ### For `0.3.0`
 
+ - [x] Declare flags as boolean options in minimist
  - [ ] Variadic arguments
  - [ ] Parse failure on unrecognized options / arguments
- - [ ] Declare flags as boolean options in minimist
  - [ ] Cleaner display of errors
 
 ### Later

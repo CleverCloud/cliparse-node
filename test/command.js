@@ -50,3 +50,17 @@ test('command with arguments', function(t) {
     t.same(r1.success, { options: {}, args: ['value'] }, 'argument present');
     t.same(r2.success, undefined, 'must fail if argument not there');
 });
+
+test('retrieve flags', function(t) {
+    t.plan(2);
+    var flag1 = cliparse.flag('test');
+    var flag2 = cliparse.flag('other-test');
+    var cmd1 = cliparse.command('name', { options: [flag1]});
+    var cmd2 = cliparse.command('name', { options: [flag1], commands: [ cliparse.command('inner', { options: [flag2] })]});
+
+    var r1 = command.getFlags(cmd1);
+    var r2 = command.getFlags(cmd2);
+
+    t.same(r1, [flag1], 'simple command');
+    t.same(r2, [flag1, flag2], 'nested commands');
+});

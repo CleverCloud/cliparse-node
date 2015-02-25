@@ -110,7 +110,11 @@ cli.autocomplete = function(cliApp, words, index) {
 cli.parse = function(cliApp, argv) {
   argv = (typeof argv === "undefined") ? process.argv : argv;
 
-  var opts = {};
+  var flags = command.getFlags(cliApp);
+
+  var opts = {
+    boolean: _.flatten(_.pluck(flags, "names")) // Declare flags as not expecting values
+  };
 
   var cliValues = minimist(argv, opts);
   var options = _.omit(cliValues, "_");

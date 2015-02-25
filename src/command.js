@@ -179,3 +179,13 @@ command.helpCommand = function() {
   c.helpCommand = true;
   return c;
 }();
+
+command.getFlags = function(cmd) {
+  var flags = _.reject(cmd.options, function(opt) { return opt.expects_value; });
+
+  var commandsFlags = _.map(cmd.commands, function(scmd) {
+    return command.getFlags(scmd);
+  });
+
+  return flags.concat(_.flatten(commandsFlags));
+};
