@@ -345,12 +345,6 @@ npm test
 
 ## ToDo
 
-### For `0.2.0`
-
- - [x] Cleaner implementation of `help` command.
- - [x] Minimal ZSH completion
- - [x] `--version, -V` support
-
 ### For `0.3.0`
 
  - [ ] Variadic arguments
