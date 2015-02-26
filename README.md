@@ -357,4 +357,4 @@ npm test
 
 ### Later
 
- - [ ] [Dedicated ZSH completion (help welcome :-])](https://github.com/divarvel/cliparse-node/issues/9)
+ - [ ] [Dedicated ZSH completion (help welcome :-\])](https://github.com/divarvel/cliparse-node/issues/9)
