@@ -351,10 +351,10 @@ npm test
 ### For `0.3.0`
 
  - [x] Declare flags as boolean options in minimist
- - [ ] Variadic arguments
- - [ ] Parse failure on unrecognized options / arguments
- - [ ] Cleaner display of errors
+ - [ ] [Variadic arguments](https://github.com/divarvel/cliparse-node/issues/7)
+ - [ ] [Parse failure on unrecognized options / arguments](https://github.com/divarvel/cliparse-node/issues/1)
+ - [ ] [Cleaner display of errors](https://github.com/divarvel/cliparse-node/issues/8)
 
 ### Later
 
- - [ ] Dedicated ZSH completion (help welcome :-])
+ - [ ] [Dedicated ZSH completion (help welcome :-])](https://github.com/divarvel/cliparse-node/issues/9)
