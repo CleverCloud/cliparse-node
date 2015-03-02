@@ -107,6 +107,15 @@ cli.autocomplete = function(cliApp, words, index) {
   }).then(console.log);
 };
 
+cli.cleanArgv = function(argv) {
+  // check the command is launched via the node interpreter (+ ensure windows compat)
+  if (argv[0].match(/node(?:\.exe)?$/)) {
+    return _.drop(argv, 2);
+  } else {
+    return _.drop(argv, 1);
+  }
+};
+
 cli.parse = function(cliApp, argv) {
   argv = (typeof argv === "undefined") ? process.argv : argv;
 
@@ -118,14 +127,7 @@ cli.parse = function(cliApp, argv) {
 
   var cliValues = minimist(argv, opts);
   var options = _.omit(cliValues, "_");
-  var args = cliValues._;
-
-  // check the command is launched via the node interpreter (+ ensure windows compat)
-  if (args[0] === "node" || args[0] === "node.exe") {
-    args = _.drop(args, 2);
-  } else {
-    args = _.drop(args, 1);
-  }
+  var args = cli.cleanArgv(cliValues._);
 
   if(option.parse(option.helpOption, options).success === true) {
     cli.displayUsage(cliApp, args);
