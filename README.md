@@ -25,11 +25,11 @@ npm install cliparse
 var cliparse = require("cliparse");
 var parsers = cliparse.parsers;
 
-function echoModule(args, options) {
+function echoModule(params) {
     
 }
 
-function addModule(args, options) {
+function addModule(params) {
     
 }
 
