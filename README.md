@@ -20,8 +20,18 @@ npm install cliparse
 ```
 
 ```javascript
+#!/usr/bin/env node
+
 var cliparse = require("cliparse");
 var parsers = cliparse.parsers;
+
+function echoModule(args, options) {
+    
+}
+
+function addModule(args, options) {
+    
+}
 
 var cliParser = cliparse.cli({
   name: "my-executable",
@@ -50,7 +60,7 @@ var cliParser = cliparse.cli({
   ]
 });
 
-cliparse.parse(testCli);
+cliparse.parse(cliParser);
 ```
 
 Where `echoModule` and `addModule` are callbacks taking a `{ args: ['value'], options: {key: 'value'} }` parameter.
