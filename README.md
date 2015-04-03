@@ -1,5 +1,7 @@
 # Declarative CLI parsing for node apps
 
+[![Join the chat at https://gitter.im/divarvel/cliparse-node](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/divarvel/cliparse-node?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Build Status](https://travis-ci.org/divarvel/cliparse-node.svg?branch=master)](https://travis-ci.org/divarvel/cliparse-node)
 
 This is a library designed to express command-line options. It supports
