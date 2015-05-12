@@ -28,15 +28,15 @@ test('stringParser turns numbers into strings', function(t) {
     t.same(result3, { success: 'Infinity' }, 'infinity');
 });
 
-test('stringParser turns booleans into strings', function(t) {
+test('stringParser errors on  booleans since it means no value has been given', function(t) {
     var input = true;
     var input2 = false;
     var result = parsers.stringParser(input);
     var result2 = parsers.stringParser(input2);
 
     t.plan(2);
-    t.same(result, { success: 'true' }, 'true');
-    t.same(result2, { success: 'false' }, 'false');
+    t.notEqual(result.error, undefined, 'true');
+    t.notEqual(result2.error, undefined, 'false');
 });
 
 

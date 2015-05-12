@@ -11,16 +11,24 @@ parsers.error = function(error) {
 };
 
 parsers.intParser = function(value) {
-  var parsed = parseInt(value, 10);
-  if(isNaN(value)) {
-    return parsers.error("invalid int: " + value);
+  if(typeof value !== 'boolean') {
+    var parsed = parseInt(value, 10);
+    if(isNaN(value)) {
+      return parsers.error("invalid int: " + value);
+    } else {
+      return parsers.success(parsed);
+    }
   } else {
-    return parsers.success(parsed);
+    return parsers.error("invalid int: no value given");
   }
 };
 
 parsers.stringParser = function(value) {
-  return parsers.success(value.toString());
+  if(typeof value !== 'boolean') {
+    return parsers.success(value.toString());
+  } else {
+    return parsers.error("invalid int: no value given");
+  }
 };
 
 parsers.booleanParser = function(value) {

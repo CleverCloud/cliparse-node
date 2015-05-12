@@ -40,6 +40,16 @@ test('required option fail if absent with no default value', function(t) {
     t.notEqual(result.error, undefined, 'error if neither value nor default is defined');
 });
 
+test('required, not boolean option fails if present with no value', function(t) {
+    var opt = cliparse.option('name', { required: true });
+
+    // without a value, minimist infers it as a flag and passes true
+    var result = option.parse(opt, { name: true });
+
+    t.plan(1);
+    t.notEqual(result.error, undefined, 'error if a not boolean option is present with no value');
+});
+
 test('falcultative option success if absent with no default value', function(t) {
     var opt = cliparse.option('name', {});
     var result = option.parse(opt, {});
