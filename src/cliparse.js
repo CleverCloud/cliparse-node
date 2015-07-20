@@ -2,7 +2,7 @@ var minimist = require("minimist");
 var _ = require("lodash");
 
 var argument = require("./argument").argument;
-var autocomplete = require("./autocomplete.js").autocomplete;
+var autocomplete = require("./autocomplete.js");
 var cli = require("./cli").cli;
 var command = require("./command").command;
 var flag = require("./option").flag;
