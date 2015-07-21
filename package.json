@@ -4,13 +4,13 @@
   "description": "Declarative CLI parsing for node apps",
   "main": "src/cliparse.js",
   "dependencies": {
-    "bluebird": "^2.9.3",
-    "lodash": "^3.0.0",
-    "minimist": "^1.1.0"
+    "bluebird": "^2.9.34",
+    "lodash": "^3.10.0",
+    "minimist": "^1.1.1"
   },
   "devDependencies": {
-    "tape": "^3.2.0",
-    "tap-spec": "^2.1.2"
+    "tape": "^4.0.1",
+    "tap-spec": "^4.0.2"
   },
   "scripts": {
     "test": "node test/main.js | node node_modules/tap-spec/bin/cmd.js"
