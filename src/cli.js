@@ -120,13 +120,21 @@ cli.parse = function(cliApp, argv) {
   argv = (typeof argv === "undefined") ? process.argv : argv;
 
   var flags = command.getFlags(cliApp);
+  var flagNames = _.flatten(_.pluck(flags, "names"));
 
   var opts = {
-    boolean: _.flatten(_.pluck(flags, "names")) // Declare flags as not expecting values
+    boolean: flagNames // Declare flags as not expecting values
   };
 
   var cliValues = minimist(argv, opts);
-  var options = _.omit(cliValues, "_");
+  var optionsWithFlagDefaults = _.omit(cliValues, "_");
+
+  // Minimist adds all the names declared as flags even though they are not
+  // present (with value false). These interfere with the parsing later, so we
+  // remove them here.
+  var options = _.object(_.filter(_.pairs(optionsWithFlagDefaults), function(kv) {
+    return kv[1] && _.contains(flagNames, kv[0]);
+  }));
   var args = cli.cleanArgv(cliValues._);
 
   if(option.parse(option.helpOption, options).success === true) {

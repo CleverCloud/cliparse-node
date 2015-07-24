@@ -68,3 +68,27 @@ test('default flag use case', function(t) {
     t.same(result3.success, false, 'false explicitely given');
 });
 
+test('make sure flags aliases are not overwritten by the complete name', function(t) {
+    t.plan(1);
+    var opt = cliparse.flag('name', { aliases: ["n"] });
+    var cli = cliparse.cli({ options: [opt] }, function(params) {
+      t.same(params.options.name, true, 'flag alias');
+    });
+
+    cliparse.parse(cli, ["node", "test.js", "-n"]);
+
+
+});
+
+test('make sure flags are not overwritten by their aliases', function(t) {
+    t.plan(1);
+    var opt = cliparse.flag('name', { aliases: ["n"] });
+    var cli = cliparse.cli({ options: [opt] }, function(params) {
+      t.same(params.options.name, true, 'flag');
+    });
+
+    cliparse.parse(cli, ["node", "test.js", "--name"]);
+
+
+});
+
