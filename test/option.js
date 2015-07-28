@@ -88,7 +88,14 @@ test('make sure flags are not overwritten by their aliases', function(t) {
     });
 
     cliparse.parse(cli, ["node", "test.js", "--name"]);
-
-
 });
 
+test('correctly parse option values', function(t) {
+    t.plan(1);
+    var opt = cliparse.option('name', { aliases: ["n"] });
+    var cli = cliparse.cli({ options: [opt] }, function(params) {
+      t.same(params.options.name, "value", 'option');
+    });
+
+    cliparse.parse(cli, ["node", "test.js", "--name", "value"]);
+});

@@ -133,7 +133,7 @@ cli.parse = function(cliApp, argv) {
   // present (with value false). These interfere with the parsing later, so we
   // remove them here.
   var options = _.object(_.filter(_.pairs(optionsWithFlagDefaults), function(kv) {
-    return kv[1] && _.contains(flagNames, kv[0]);
+    return kv[1] || !_.contains(flagNames, kv[0]);
   }));
   var args = cli.cleanArgv(cliValues._);
 
