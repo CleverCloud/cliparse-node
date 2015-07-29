@@ -54,7 +54,9 @@ argument.usage = function(argument) {
 };
 
 argument.help = function(arg) {
-  return [argument.usage(arg), arg.description];
+  var description = arg.description;
+  if(arg.default !== null) description += " (default: " + arg.default + ")";
+  return [argument.usage(arg), description];
 };
 
 argument.complete = function(arg, word) {
