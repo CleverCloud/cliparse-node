@@ -1,4 +1,5 @@
 var _ = require("lodash");
+var fs = require("fs");
 
 var parsers = module.exports = {};
 
@@ -29,6 +30,15 @@ parsers.booleanParser = function(value) {
     return parsers.success(value);
   } else {
     return parsers.error("invalid boolean: " + value);
+  }
+};
+
+parsers.existingPathParser = function(value) {
+  // Check that the given string is a legit path of a file that exists
+  if (fs.existsSync(value)) {
+    return parsers.success(value);
+  } else {
+    return parsers.error('File ' + value + ' does not exist');
   }
 };
 
