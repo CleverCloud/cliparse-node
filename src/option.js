@@ -56,8 +56,11 @@ option.parseObject = function(options, providedOptions) {
 
 option.help = function(opt) {
   var output = option.displayOptionNames(opt.names, opt.required, true);
+  var description = opt.description;
   if(opt.metavar) output += ' ' + opt.metavar.toUpperCase();
-  return [output, opt.description];
+  if(opt.default !== null) description += " (default: " + opt.default + ")";
+
+  return [output, description.trim()];
 };
 
 option.usage = function(opt) {
