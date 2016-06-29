@@ -109,7 +109,7 @@ cli.autocomplete = function(cliApp, words, index) {
 
 cli.cleanArgv = function(argv) {
   // check the command is launched via the node interpreter (+ ensure windows compat)
-  if (argv[0].match(/node(?:\.exe)?$/)) {
+  if (argv[0].match(/node/)) {
     return _.drop(argv, 2);
   } else {
     return _.drop(argv, 1);
