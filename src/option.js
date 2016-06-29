@@ -60,7 +60,7 @@ option.help = function(opt) {
   if(opt.metavar) output += ' ' + opt.metavar.toUpperCase();
   if(opt.default !== null) description += " (default: " + opt.default + ")";
 
-  return [output, description];
+  return [output, description.trim()];
 };
 
 option.usage = function(opt) {
