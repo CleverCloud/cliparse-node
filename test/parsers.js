@@ -67,4 +67,18 @@ test('booleanParser is noop for booleans', function(t) {
     t.same(result2, { success: input2 }, 'false');
 });
 
+/*
+ * fileParser
+ */
+
+test('existingPathParser tests for file existence', function(t) {
+   var input = 'test/parsers.js';
+   var input2 = 'test/i-do-not-exist-cause-who-would-name-a-file-like-me';
+   var result = parsers.existingPathParser(input);
+   var result2 = parsers.existingPathParser(input2);
+
+   t.plan(2);
+   t.same(result, { success: 'test/parsers.js' }, 'File path');
+   t.same(result2, { error: 'File ' + input2 + ' does not exist' }, 'Error string');
+});
 
