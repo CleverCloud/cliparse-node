@@ -17,6 +17,7 @@ command.command = function(name, options, cb) {
   options.args = options.args || [];
   options.options = options.options || [];
   options.commands = options.commands || [];
+  options.aliases = options.aliases || [];
   options.action = typeof cb !== 'undefined' ? cb : null;
   return options;
 };
@@ -99,7 +100,8 @@ command.parseFinal = function(cmd, parentOptions, givenArgs, givenOpts) {
 command.parse = function(cmd, parentOptions, givenArgs, givenOpts) {
   var result;
   var matchedCommand = _.find(cmd.commands, function(subcommand) {
-    return subcommand.name === _.head(givenArgs);
+    var givenName = _.head(givenArgs);
+    return subcommand.name === givenName || _.includes(subcommand.aliases, givenName);
   });
 
   if(matchedCommand) {
