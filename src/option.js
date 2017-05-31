@@ -39,17 +39,36 @@ option.parse = function(opt, providedOptions) {
   return result;
 };
 
+option.isRecognized = function(options, providedOption) {
+  var recognizedNames = _(options).map(function(opt) { return opt.names}).flatten().value();
+  return recognizedNames.indexOf(providedOption) >= 0;
+};
+
+option.listUnknown = function(options, providedOptions) {
+  return _.reject(providedOptions, _.partial(option.isRecognized, options));
+};
+
 option.parseObject = function(options, providedOptions) {
   var results = _.map(options, function(opt) {
     return option.parse(opt, providedOptions);
   });
 
+
+  var unknownOptions = option.listUnknown(options, Object.keys(providedOptions));
+  var unknownOptionsErrors = _.map(unknownOptions, function(name) {
+    return parsers.error("Unknown option: " + name);
+  });
+
   if(_.every(results, parsers.isSuccess)) {
-    return parsers.success(_.object(_.map(results, function(r) {
-      return [r.option.name, r.success];
-    })));
+    if(unknownOptions.length === 0) {
+      return parsers.success(_.object(_.map(results, function(r) {
+        return [r.option.name, r.success];
+      })));
+    } else {
+      return parsers.error(unknownOptionsErrors);
+    }
   } else {
-    return parsers.error(_.filter(results, parsers.isError));
+    return parsers.error(_.filter(results, parsers.isError).concat(unknownOptionsErrors));
   }
 };
 

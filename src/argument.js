@@ -32,16 +32,20 @@ argument.parse = function(argument, value) {
 };
 
 argument.parseList = function(args, providedArguments) {
-  var combined = _.zip(args, _.take(providedArguments, args.length));
+  if(providedArguments.length <= args.length) {
+    var combined = _.zip(args, _.take(providedArguments, args.length));
 
-  var results = _.map(combined, function(kv) {
-    return argument.parse(kv[0], kv[1]);
-  });
+    var results = _.map(combined, function(kv) {
+      return argument.parse(kv[0], kv[1]);
+    });
 
-  if(_.every(results, parsers.isSuccess)) {
-    return parsers.success(_.pluck(results, "success"));
+    if(_.every(results, parsers.isSuccess)) {
+      return parsers.success(_.pluck(results, "success"));
+    } else {
+      return parsers.error(results);
+    }
   } else {
-    return parsers.error(results);
+    return parsers.error([parsers.error("Too many arguments: " + _.drop(providedArguments, args.length).join(", "))]);
   }
 };
 

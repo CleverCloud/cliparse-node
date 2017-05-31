@@ -54,10 +54,18 @@ cli.displayUsage = function(cliApp, givenArgs) {
 
 cli.displayErrors = function(errors, cliApp, givenArgs) {
   var argsErrors = _.map(errors.args, function(error) {
-    return error.argument.name + ': ' + error.error;
+    if(error.argument) {
+      return error.argument.name + ': ' + error.error;
+    } else {
+      return error.error;
+    }
   });
   var optionsErrors = _.map(errors.options, function(error) {
-    return error.option.name + ': ' + error.error;
+    if(error.option) {
+      return error.option.name + ': ' + error.error;
+    } else {
+      return error.error;
+    }
   });
 
   if(!_.isEmpty(argsErrors)) console.log(argsErrors.join('\n'));

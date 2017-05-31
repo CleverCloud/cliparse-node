@@ -40,15 +40,17 @@ test('command with a required option without default', function(t) {
 });
 
 test('command with arguments', function(t) {
-    t.plan(2);
+    t.plan(3);
     var argument = cliparse.argument('test');
     var cmd = cliparse.command('name', { args: [argument]});
 
     var r1 = command.parse(cmd, [], ['value'], {});
     var r2 = command.parse(cmd, [], [], {});
+    var r3 = command.parse(cmd, [], ['value', 'extra value'], {});
 
     t.same(r1.success, { options: {}, args: ['value'] }, 'argument present');
     t.same(r2.success, undefined, 'must fail if argument not there');
+    t.same(r3.success, undefined, 'murt fail if unknown argument');
 });
 
 test('retrieve flags', function(t) {
@@ -63,4 +65,12 @@ test('retrieve flags', function(t) {
 
     t.same(r1, [flag1], 'simple command');
     t.same(r2, [flag1, flag2], 'nested commands');
+});
+
+test('command with unknown options', function(t) {
+  t.plan(1);
+  var flag = cliparse.flag('test');
+  var cmd = cliparse.command('name', { options: [flag]});
+  var r = command.parse(cmd, [], [], {test: true, unknown: "value"});
+  t.same(r.success, undefined, 'must fail on unknown options')
 });
