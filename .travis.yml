@@ -1,3 +1,7 @@
 language: node_js
 node_js:
-  - "0.10"
+  - "4.8"
+  - "6.10"
+  - "7.10"
+  - "8.0"
+sudo: false
