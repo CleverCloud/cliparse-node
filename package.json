@@ -9,11 +9,12 @@
     "minimist": "^1.2.0"
   },
   "devDependencies": {
-    "tape": "^4.6.3",
-    "tap-spec": "^4.1.1"
+    "tap": "^10.3.2",
+    "tap-spec": "^4.1.1",
+    "tape": "^4.6.3"
   },
   "scripts": {
-    "test": "node test/main.js | node node_modules/tap-spec/bin/cmd.js"
+    "test": "node test/main.js | tap-spec && tap test/main.js --coverage"
   },
   "author": "Clément Delafargue <clement@delafargue.name>",
   "license": "MIT",
