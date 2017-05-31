@@ -40,7 +40,7 @@ argument.parseList = function(args, providedArguments) {
     });
 
     if(_.every(results, parsers.isSuccess)) {
-      return parsers.success(_.pluck(results, "success"));
+      return parsers.success(_.map(results, "success"));
     } else {
       return parsers.error(results);
     }

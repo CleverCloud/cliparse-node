@@ -128,7 +128,7 @@ cli.parse = function(cliApp, argv) {
   argv = (typeof argv === "undefined") ? process.argv : argv;
 
   var flags = command.getFlags(cliApp);
-  var flagNames = _.flatten(_.pluck(flags, "names"));
+  var flagNames = _.flatten(_.map(flags, "names"));
 
   var opts = {
     boolean: flagNames // Declare flags as not expecting values
@@ -140,8 +140,8 @@ cli.parse = function(cliApp, argv) {
   // Minimist adds all the names declared as flags even though they are not
   // present (with value false). These interfere with the parsing later, so we
   // remove them here.
-  var options = _.object(_.filter(_.pairs(optionsWithFlagDefaults), function(kv) {
-    return kv[1] || !_.contains(flagNames, kv[0]);
+  var options = _.fromPairs(_.filter(_.toPairs(optionsWithFlagDefaults), function(kv) {
+    return kv[1] || !_.includes(flagNames, kv[0]);
   }));
   var args = cli.cleanArgv(cliValues._);
 

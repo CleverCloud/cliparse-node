@@ -47,7 +47,7 @@ command.autocompleteFinal = function(cmd, argsLeft, argv, words, index, parentOp
   }
 
   // Complete commands
-  var commandNames = _.pluck(cmd.commands, 'name');
+  var commandNames = _.map(cmd.commands, 'name');
   availCommands = autocomplete.words(commandNames);
   // Complete argument
   var argIndex = argsLeft.length;

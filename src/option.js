@@ -61,7 +61,7 @@ option.parseObject = function(options, providedOptions) {
 
   if(_.every(results, parsers.isSuccess)) {
     if(unknownOptions.length === 0) {
-      return parsers.success(_.object(_.map(results, function(r) {
+      return parsers.success(_.fromPairs(_.map(results, function(r) {
         return [r.option.name, r.success];
       })));
     } else {
