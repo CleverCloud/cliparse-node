@@ -1,6 +1,7 @@
 # Declarative CLI parsing for node apps
 
 [![Build Status](https://travis-ci.org/divarvel/cliparse-node.svg?branch=master)](https://travis-ci.org/divarvel/cliparse-node)[![Gitter chat](https://badges.gitter.im/divarvel/cliparse-node.png)](https://gitter.im/divarvel/cliparse-node)
+[![Coverage Status](https://coveralls.io/repos/github/divarvel/cliparse-node/badge.svg?branch=master)](https://coveralls.io/github/divarvel/cliparse-node?branch=master)
 
 This is a library designed to express command-line options. It supports
 commands and subcommands (at an arbitrary depth), automatically generates help
