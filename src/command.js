@@ -38,7 +38,7 @@ command.autocompleteFinal = function(cmd, argsLeft, argv, words, index, parentOp
     // Complete option value
     var name = previousWord.slice(0, 2) === '--' ? previousWord.slice(2) : previousWord.slice(1);
     var previousOption = _.find(allOptions, function(opt) {
-      return _.contains(opt.names, name);
+      return _.includes(opt.names, name);
     });
 
     if(previousOption && previousOption.metavar) {
