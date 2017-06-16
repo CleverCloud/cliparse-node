@@ -3,6 +3,7 @@ var test = require("tape");
 
 var cliparse = require("../src/cliparse.js");
 var autocomplete = require("../src/autocomplete.js");
+var command = require("../src/command.js");
 
 /*
  * Autocomplete results monoid
@@ -97,6 +98,30 @@ test('available command paths', function(t) {
   t.same(autocomplete.subpaths(cmds), [[ 'inner' ]], 'Commands');
   t.same(autocomplete.subpaths(subcmds), [['number', 'add'], ['number', 'multiply']], 'Subcommands');
 
+});
+
+var myCmd = cliparse.command('cmd', {
+  "options": [
+    cliparse.option("my-option", {
+      "aliases": ["m"],
+      "metavar": "VALUE",
+      "complete": function() {return cliparse.autocomplete.words(["test"]);}
+    })
+  ]
+});
+
+test('available arguments for a command', function(t) {
+  t.plan(3);
+
+  command.autocompleteFinal(myCmd, 1, [], ["cmd", "-"], 1, []).then(function(r) {
+    t.same(r.words, ["--my-option", "-m"], "Complete option name");
+  });
+  command.autocompleteFinal(myCmd, 1, [], ["cmd", "--my-option", ""], 2, []).then(function(r) {
+    t.same(r.words, ["test"], "Complete option value (long name)");
+  });
+  command.autocompleteFinal(myCmd, 1, [], ["cmd", "-m", ""], 2, []).then(function(r) {
+    t.same(r.words, ["test"], "Complete option value (short name)");
+  });
 });
 
 test('help command completion', function(t) {
