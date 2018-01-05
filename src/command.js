@@ -180,12 +180,23 @@ command.helpCommand = function() {
   return c;
 }();
 
-command.getFlags = function(cmd) {
-  var flags = _.reject(cmd.options, function(opt) { return opt.expects_value; });
-
-  var commandsFlags = _.map(cmd.commands, function(scmd) {
-    return command.getFlags(scmd);
-  });
-
-  return flags.concat(_.flatten(commandsFlags));
+command.getFlagNames = function(cmd) {
+  return _([cmd])
+    .concat(cmd.commands)
+    .flatMap('options')
+    .reject(function(opt) { return opt.expects_value; })
+    .flatMap('names')
+    .uniq()
+    .value()
 };
+
+
+command.getOptionNames = function (cmd) {
+  return _([cmd])
+    .concat(cmd.commands)
+    .flatMap('options')
+    .filter(function(opt) { return opt.expects_value; })
+    .flatMap('names')
+    .uniq()
+    .value()
+}
