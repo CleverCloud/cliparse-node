@@ -127,10 +127,11 @@ cli.cleanArgv = function(argv) {
 cli.parse = function(cliApp, argv) {
   argv = (typeof argv === "undefined") ? process.argv : argv;
 
-  var flags = command.getFlags(cliApp);
-  var flagNames = _.flatten(_.map(flags, "names"));
+  var flagNames = command.getFlagNames(cliApp);
+  var optionNames = command.getOptionNames(cliApp);
 
   var opts = {
+    string: optionNames, // All other options should be treated as strings (and not coerced)
     boolean: flagNames // Declare flags as not expecting values
   };
 

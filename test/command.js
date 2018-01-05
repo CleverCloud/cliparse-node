@@ -54,17 +54,35 @@ test('command with arguments', function(t) {
 });
 
 test('retrieve flags', function(t) {
+  t.plan(2);
+  var flag1 = cliparse.flag('flag-one');
+  var flag2 = cliparse.flag('flag-two', { aliases: ["f"] });
+  var option1 = cliparse.option('opt-one');
+  var option2 = cliparse.option('opt-two', { aliases: ["o"] });
+  var cmd1 = cliparse.command('name', { options: [flag1, option2]});
+  var cmd2 = cliparse.command('name', { options: [flag1, option1], commands: [ cliparse.command('inner', { options: [flag2, option2] })]});
+
+  var r1 = command.getFlagNames(cmd1);
+  var r2 = command.getFlagNames(cmd2);
+
+  t.same(r1, ['flag-one'], 'simple command');
+  t.same(r2, ['flag-one', 'flag-two', 'f'], 'nested commands');
+});
+
+test('retrieve option names', function(t) {
     t.plan(2);
-    var flag1 = cliparse.flag('test');
-    var flag2 = cliparse.flag('other-test');
-    var cmd1 = cliparse.command('name', { options: [flag1]});
-    var cmd2 = cliparse.command('name', { options: [flag1], commands: [ cliparse.command('inner', { options: [flag2] })]});
+    var flag1 = cliparse.flag('flag-one');
+    var flag2 = cliparse.flag('flag-two', { aliases: ["f"] });
+    var option1 = cliparse.option('opt-one');
+    var option2 = cliparse.option('opt-two', { aliases: ["o"] });
+    var cmd1 = cliparse.command('name', { options: [flag1, option2]});
+    var cmd2 = cliparse.command('name', { options: [flag1, option1], commands: [ cliparse.command('inner', { options: [flag2, option2] })]});
 
-    var r1 = command.getFlags(cmd1);
-    var r2 = command.getFlags(cmd2);
+    var r1 = command.getOptionNames(cmd1);
+    var r2 = command.getOptionNames(cmd2);
 
-    t.same(r1, [flag1], 'simple command');
-    t.same(r2, [flag1, flag2], 'nested commands');
+    t.same(r1, ['opt-two', 'o'], 'simple command');
+    t.same(r2, ['opt-one', 'opt-two', 'o'], 'nested commands');
 });
 
 test('command with unknown options', function(t) {
