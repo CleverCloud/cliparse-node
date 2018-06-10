@@ -67,6 +67,17 @@ test('booleanParser is noop for booleans', function(t) {
     t.same(result2, { success: input2 }, 'false');
 });
 
+test('booleanParser handles and converts string booleans', function(t) {
+    var input = 'true';
+    var input2 = 'false';
+    var result = parsers.booleanParser(input);
+    var result2 = parsers.booleanParser(input2);
+
+    t.plan(2);
+    t.same(result, { success: true }, 'true');
+    t.same(result2, { success: false }, 'false');
+});
+
 /*
  * fileParser
  */

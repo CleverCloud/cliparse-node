@@ -28,9 +28,17 @@ parsers.booleanParser = function(value) {
   // minimist autoparses stuff anyway…
   if(typeof value === 'boolean') {
     return parsers.success(value);
-  } else {
-    return parsers.error("invalid boolean: " + value);
   }
+
+  if(value === 'false'){
+    return parsers.success(false);
+  }
+
+  if(value === 'true'){
+    return parsers.success(true);
+  }
+  
+  return parsers.error("invalid boolean: " + value);
 };
 
 parsers.existingPathParser = function(value) {
