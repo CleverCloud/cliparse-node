@@ -1,7 +1,7 @@
 # Declarative CLI parsing for node apps
 
-[![Build Status](https://travis-ci.org/divarvel/cliparse-node.svg?branch=master)](https://travis-ci.org/divarvel/cliparse-node)[![Gitter chat](https://badges.gitter.im/divarvel/cliparse-node.png)](https://gitter.im/divarvel/cliparse-node)
-[![Coverage Status](https://coveralls.io/repos/github/divarvel/cliparse-node/badge.svg?branch=master)](https://coveralls.io/github/divarvel/cliparse-node?branch=master)
+[![Build Status](https://travis-ci.org/CleverCloud/cliparse-node.svg?branch=master)](https://travis-ci.org/CleverCloud/cliparse-node)
+[![Coverage Status](https://coveralls.io/repos/github/CleverCloud/cliparse-node/badge.svg?branch=master)](https://coveralls.io/github/CleverCloud/cliparse-node?branch=master)
 
 This is a library designed to express command-line options. It supports
 commands and subcommands (at an arbitrary depth), automatically generates help
@@ -12,6 +12,14 @@ Its design is vaguely inspired from
 [optparse-applicative](https://hackage.haskell.org/package/optparse-applicative)
 which is a great CLI parsing library. JS being not as expressive as Haskell, a
 direct port is not possible.
+
+> Disclaimer:
+>
+> This library has been started by @divarvel as part of his job at Clever Cloud. Since he
+> left the company and doesn't use cliparse nore wishes to maintain it anymore, we
+> mutually agreed to transfer ownership of the project to CleverCloud.
+>
+> Big thanks to him for producing this library!
 
 
 ## Enough talk, show me the code
