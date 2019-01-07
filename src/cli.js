@@ -90,10 +90,14 @@ cli.execute = function(cliApp, args, options) {
   }
 };
 
-cli.autocomplete = function(cliApp, words, index) {
+cli.autocomplete = function(cliApp, words, index, flagNames, optionNames) {
   if(typeof words !== 'object') words = [words];
   if(index >= words.length) words.push('');
-  var argv = minimist(words);
+  var opts = {
+     string: optionNames.concat(["_"]),
+    boolean: flagNames
+  }
+  var argv = minimist(words, opts);
   var current = words[index] || '';
   var consumedArgs = autocomplete.currentArg(words, index, argv._).consumedArgs;
   var results;
@@ -131,7 +135,7 @@ cli.parse = function(cliApp, argv) {
   var optionNames = command.getOptionNames(cliApp);
 
   var opts = {
-    string: optionNames, // All other options should be treated as strings (and not coerced)
+    string: optionNames.concat(["autocomplete-words", "_"]), // All other options should be treated as strings (and not coerced)
     boolean: flagNames // Declare flags as not expecting values
   };
 
@@ -157,7 +161,7 @@ cli.parse = function(cliApp, argv) {
   } else if(options["zsh-autocomplete-script"]) {
     console.log(autocompleteScript.bashScript(options["zsh-autocomplete-script"], true));
   } else if(options["autocomplete-words"] && options["autocomplete-index"]) {
-    cli.autocomplete(cliApp, options["autocomplete-words"], options["autocomplete-index"]);
+    cli.autocomplete(cliApp, options["autocomplete-words"], options["autocomplete-index"], flagNames, optionNames);
   } else {
     cli.execute(cliApp, args, options);
   }

@@ -5,12 +5,12 @@
   "main": "src/cliparse.js",
   "dependencies": {
     "bluebird": "^3.5.0",
-    "lodash": "^4.17.4",
+    "lodash": "^4.17.11",
     "minimist": "^1.2.0"
   },
   "devDependencies": {
-    "tap": "^10.3.2",
-    "tap-spec": "^4.1.1",
+    "tap": "^12.1.1",
+    "tap-spec": "^5.0.0",
     "tape": "^4.6.3"
   },
   "scripts": {
