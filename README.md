@@ -16,7 +16,7 @@ direct port is not possible.
 > Disclaimer:
 >
 > This library has been started by @divarvel as part of his job at Clever Cloud. Since he
-> left the company and doesn't use cliparse nore wishes to maintain it anymore, we
+> left the company and doesn't use cliparse nor wishes to maintain it anymore, we
 > mutually agreed to transfer ownership of the project to CleverCloud.
 >
 > Big thanks to him for producing this library!
