@@ -1,17 +1,17 @@
 {
   "name": "cliparse",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Declarative CLI parsing for node apps",
   "main": "src/cliparse.js",
   "dependencies": {
-    "bluebird": "^3.5.0",
-    "lodash": "^4.17.11",
-    "minimist": "^1.2.0"
+    "bluebird": "^3.7.2",
+    "lodash": "^4.17.20",
+    "minimist": "^1.2.5"
   },
   "devDependencies": {
-    "tap": "^12.1.1",
+    "tap": "^14.11.0",
     "tap-spec": "^5.0.0",
-    "tape": "^4.6.3"
+    "tape": "^5.1.1"
   },
   "scripts": {
     "test": "node test/main.js | tap-spec && tap test/main.js --coverage"
