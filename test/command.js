@@ -54,35 +54,53 @@ test('command with arguments', function(t) {
 });
 
 test('retrieve flags', function(t) {
-  t.plan(2);
+  t.plan(3);
   var flag1 = cliparse.flag('flag-one');
   var flag2 = cliparse.flag('flag-two', { aliases: ["f"] });
+  var flag3 = cliparse.flag('flag-three', { aliases: ["x"]});
   var option1 = cliparse.option('opt-one');
   var option2 = cliparse.option('opt-two', { aliases: ["o"] });
+  var option3 = cliparse.option('opt-three', { aliases: ["t"]});
   var cmd1 = cliparse.command('name', { options: [flag1, option2]});
   var cmd2 = cliparse.command('name', { options: [flag1, option1], commands: [ cliparse.command('inner', { options: [flag2, option2] })]});
+  var cmd3 = cliparse.command('name', { options: [flag1, option1], commands: [
+    cliparse.command('inner', { options: [flag2, option2], commands: [
+        cliparse.command('second-inner', { options: [flag3, option3] }),
+    ]})
+  ]});
 
   var r1 = command.getFlagNames(cmd1);
   var r2 = command.getFlagNames(cmd2);
+  var r3 = command.getFlagNames(cmd3);
 
   t.same(r1, ['flag-one'], 'simple command');
   t.same(r2, ['flag-one', 'flag-two', 'f'], 'nested commands');
+  t.same(r3, ['flag-one', 'flag-two', 'f', 'flag-three', 'x'], 'nested commands two levels');
 });
 
 test('retrieve option names', function(t) {
-    t.plan(2);
+    t.plan(3);
     var flag1 = cliparse.flag('flag-one');
     var flag2 = cliparse.flag('flag-two', { aliases: ["f"] });
+    var flag3 = cliparse.flag('flag-three', { aliases: ["x"]});
     var option1 = cliparse.option('opt-one');
     var option2 = cliparse.option('opt-two', { aliases: ["o"] });
+    var option3 = cliparse.option('opt-three', { aliases: ["t"]});
     var cmd1 = cliparse.command('name', { options: [flag1, option2]});
     var cmd2 = cliparse.command('name', { options: [flag1, option1], commands: [ cliparse.command('inner', { options: [flag2, option2] })]});
+    var cmd3 = cliparse.command('name', { options: [flag1, option1], commands: [
+        cliparse.command('inner', { options: [flag2, option2], commands: [
+            cliparse.command('second-inner', { options: [flag3, option3] }),
+        ]})
+    ]});
 
     var r1 = command.getOptionNames(cmd1);
     var r2 = command.getOptionNames(cmd2);
+    var r3 = command.getOptionNames(cmd3);
 
     t.same(r1, ['opt-two', 'o'], 'simple command');
     t.same(r2, ['opt-one', 'opt-two', 'o'], 'nested commands');
+    t.same(r3, ['opt-one', 'opt-two', 'o', 'opt-three', 't'], 'nested commands two levels');
 });
 
 test('command with unknown options', function(t) {
