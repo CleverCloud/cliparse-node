@@ -180,9 +180,18 @@ command.helpCommand = function() {
   return c;
 }();
 
+function getCommandsOfCommand(command) {
+  return _.reduce(command.commands, (commands, command) => {
+    if (command.commands.length > 0) {
+      return commands.concat(getCommandsOfCommand(command));
+    } else {
+      return commands.concat([command]);
+    }
+  }, [command]);
+}
+
 command.getFlagNames = function(cmd) {
-  return _([cmd])
-    .concat(cmd.commands)
+  return _(getCommandsOfCommand(cmd))
     .flatMap('options')
     .reject(function(opt) { return opt.expects_value; })
     .flatMap('names')
@@ -190,10 +199,8 @@ command.getFlagNames = function(cmd) {
     .value()
 };
 
-
 command.getOptionNames = function (cmd) {
-  return _([cmd])
-    .concat(cmd.commands)
+  return _(getCommandsOfCommand(cmd))
     .flatMap('options')
     .filter(function(opt) { return opt.expects_value; })
     .flatMap('names')
