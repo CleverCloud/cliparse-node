@@ -51,7 +51,7 @@ test('correctly parse subcommand options', function(t) {
     t.equal(r.error, undefined, 'parse must succeed');
     t.equal(r.context.length, 2, 'subcommand parse');
     t.equal(_.last(r.context).name, 'nested', 'correct subcommand parse');
-    t.same(r.success, { args: [], options: { test: true }}, 'correct subcommand parse');
+    t.same(r.success, { args: [], namedArgs: {}, unnamedArgs: [], options: { test: true }}, 'correct subcommand parse');
 });
 
 test('carry top-level options to subcommands', function(t) {
@@ -67,6 +67,6 @@ test('carry top-level options to subcommands', function(t) {
     t.equal(r.error, undefined, 'parse must succeed');
     t.equal(r.context.length, 2, 'subcommand parse');
     t.equal(_.last(r.context).name, 'nested', 'correct subcommand parse');
-    t.same(r.success, { args: [], options: { test: true }}, 'correct subcommand parse');
+    t.same(r.success, { args: [], namedArgs: {}, unnamedArgs: [], options: { test: true }}, 'correct subcommand parse');
 
 });

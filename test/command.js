@@ -12,7 +12,7 @@ test('default command use case', function(t) {
     t.plan(1);
     var cmd = cliparse.command('name');
     var result = command.parse(cmd, [], [], {});
-    t.same(result.success, { options: {}, args: [] });
+    t.same(result.success, { options: {}, args: [], namedArgs: {}, unnamedArgs: [] });
 });
 
 test('command with one flag', function(t) {
@@ -23,8 +23,8 @@ test('command with one flag', function(t) {
     var r1 = command.parse(cmd, [], [], { test: true });
     var r2 = command.parse(cmd, [], [], {});
 
-    t.same(r1.success, { options: { test: true }, args: [] }, 'option present');
-    t.same(r2.success, { options: { test: false }, args: [] }, 'option not there');
+    t.same(r1.success, { options: { test: true }, args: [], namedArgs: {}, unnamedArgs: [] }, 'option present');
+    t.same(r2.success, { options: { test: false }, args: [], namedArgs: {}, unnamedArgs: [] }, 'option not there');
 });
 
 test('command with a required option without default', function(t) {
@@ -35,7 +35,7 @@ test('command with a required option without default', function(t) {
     var r1 = command.parse(cmd, [], [], { test: true });
     var r2 = command.parse(cmd, [], [], {});
 
-    t.same(r1.success, { options: { test: true }, args: [] }, 'option present');
+    t.same(r1.success, { options: { test: true }, args: [], namedArgs: {}, unnamedArgs: [] }, 'option present');
     t.same(r2.success, undefined, 'option not there');
 });
 
@@ -48,9 +48,22 @@ test('command with arguments', function(t) {
     var r2 = command.parse(cmd, [], [], {});
     var r3 = command.parse(cmd, [], ['value', 'extra value'], {});
 
-    t.same(r1.success, { options: {}, args: ['value'] }, 'argument present');
+    t.same(r1.success, { options: {}, args: ['value'], namedArgs: { test: 'value' }, unnamedArgs: [] }, 'argument present');
     t.same(r2.success, undefined, 'must fail if argument not there');
-    t.same(r3.success, undefined, 'murt fail if unknown argument');
+    t.same(r3.success, { options: {}, args: ['value', 'extra value'], namedArgs: { test: 'value' }, unnamedArgs: ['extra value'] }, 'must recognize named argument and split unnamed argument');
+});
+
+test('command with no named arguments', function(t) {
+    t.plan(3);
+    var cmd = cliparse.command('name', {});
+
+    var r1 = command.parse(cmd, [], ['value'], {});
+    var r2 = command.parse(cmd, [], [], {});
+    var r3 = command.parse(cmd, [], ['value', 'extra value'], {});
+
+    t.same(r1.success, { options: {}, args: ['value'], namedArgs: {}, unnamedArgs: ['value'] }, 'argument present');
+    t.same(r2.success, { options: {}, args: [], namedArgs: {}, unnamedArgs: [] }, 'no arguments means no failure');
+    t.same(r3.success, { options: {}, args: ['value', 'extra value'], namedArgs: {}, unnamedArgs: ['value', 'extra value'] }, 'must put all arguments as unnamed');
 });
 
 test('retrieve flags', function(t) {

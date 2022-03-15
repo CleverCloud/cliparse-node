@@ -39,3 +39,11 @@ test('argument uses the given parser', function(t) {
     t.plan(1);
     t.same(result.success, 12, 'argument taking an int');
 });
+
+test('undefined argument defaults to stringParser', function(t) {
+    var result = argument.parse(undefined, '12');
+
+    t.plan(2);
+    t.same(result.success, '12', 'undefined argument falls back to string');
+    t.same(result.argument, undefined, 'undefined argument falls back to string');
+});
