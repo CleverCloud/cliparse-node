@@ -5,13 +5,13 @@
   "main": "src/cliparse.js",
   "dependencies": {
     "bluebird": "^3.7.2",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.21",
     "minimist": "^1.2.5"
   },
   "devDependencies": {
-    "tap": "^14.11.0",
-    "tap-spec": "^5.0.0",
-    "tape": "^5.1.1"
+    "tap": "^16.0.0",
+    "tap-spec": "^2.2.2",
+    "tape": "^5.5.2"
   },
   "scripts": {
     "test": "node test/main.js | tap-spec && tap test/main.js --coverage"
