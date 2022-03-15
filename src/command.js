@@ -34,9 +34,9 @@ command.autocompleteFinal = function(cmd, argsLeft, argv, words, index, parentOp
   if(typeof currentWord === 'string' && currentWord.slice(0, 1) === '-') {
     // Complete option name
     availOptionNames = autocomplete.mconcat(_.map(allOptions, option.completeName));
-  } else if(typeof previousWord === 'string' && previousWord.slice(0, 1) === '-') {
+  } else if(typeof previousWord === 'string' && previousWord.slice(0, 1) === '-') {
     // Complete option value
-    var name = previousWord.slice(0, 2) === '--' ? previousWord.slice(2) : previousWord.slice(1);
+    var name = previousWord.slice(0, 2) === '--' ? previousWord.slice(2) : previousWord.slice(1);
     var previousOption = _.find(allOptions, function(opt) {
       return _.includes(opt.names, name);
     });

@@ -60,11 +60,11 @@ test('retrieve flags', function(t) {
   var flag3 = cliparse.flag('flag-three', { aliases: ["x"]});
   var option1 = cliparse.option('opt-one');
   var option2 = cliparse.option('opt-two', { aliases: ["o"] });
-  var option3 = cliparse.option('opt-three', { aliases: ["t"]});
+  var option3 = cliparse.option('opt-three', { aliases: ["t"]});
   var cmd1 = cliparse.command('name', { options: [flag1, option2]});
   var cmd2 = cliparse.command('name', { options: [flag1, option1], commands: [ cliparse.command('inner', { options: [flag2, option2] })]});
   var cmd3 = cliparse.command('name', { options: [flag1, option1], commands: [
-    cliparse.command('inner', { options: [flag2, option2], commands: [
+    cliparse.command('inner', { options: [flag2, option2], commands: [
         cliparse.command('second-inner', { options: [flag3, option3] }),
     ]})
   ]});
@@ -85,11 +85,11 @@ test('retrieve option names', function(t) {
     var flag3 = cliparse.flag('flag-three', { aliases: ["x"]});
     var option1 = cliparse.option('opt-one');
     var option2 = cliparse.option('opt-two', { aliases: ["o"] });
-    var option3 = cliparse.option('opt-three', { aliases: ["t"]});
+    var option3 = cliparse.option('opt-three', { aliases: ["t"]});
     var cmd1 = cliparse.command('name', { options: [flag1, option2]});
     var cmd2 = cliparse.command('name', { options: [flag1, option1], commands: [ cliparse.command('inner', { options: [flag2, option2] })]});
     var cmd3 = cliparse.command('name', { options: [flag1, option1], commands: [
-        cliparse.command('inner', { options: [flag2, option2], commands: [
+        cliparse.command('inner', { options: [flag2, option2], commands: [
             cliparse.command('second-inner', { options: [flag3, option3] }),
         ]})
     ]});
