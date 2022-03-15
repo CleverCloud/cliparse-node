@@ -81,10 +81,9 @@ command.parseFinal = function(cmd, parentOptions, givenArgs, givenOpts) {
   var parsedOptions = option.parseObject(cmd.options.concat(parentOptions), givenOpts);
 
   if(parsers.isSuccess(parsedArguments) && parsers.isSuccess(parsedOptions)) {
-    result = parsers.success({
-      args: parsedArguments.success,
+    result = parsers.success(_.assign(parsedArguments.success, {
       options: parsedOptions.success
-    });
+    }));
   } else {
     result = parsers.error({
       args: parsedArguments.error || [],

@@ -18,10 +18,10 @@ argument.argument = function(name, options) {
 };
 
 argument.parse = function(argument, value) {
-  var result;
+  let result;
   if(typeof value !== 'undefined' && value !== null) {
-    result = argument.parser(value);
-  } else if(argument.default !== null) {
+    result = argument?.parser(value) ?? parsers.stringParser(value);
+  } else if((argument?.default ?? null) !== null) {
     result = parsers.success(argument.default);
   } else {
     result = parsers.error("missing value");
@@ -32,20 +32,25 @@ argument.parse = function(argument, value) {
 };
 
 argument.parseList = function(args, providedArguments) {
-  if(providedArguments.length <= args.length) {
-    var combined = _.zip(args, _.take(providedArguments, args.length));
+  const combined = _.zip(args, providedArguments);
 
-    var results = _.map(combined, function(kv) {
-      return argument.parse(kv[0], kv[1]);
+  const results = _.map(combined, function(kv) {
+    return argument.parse(kv[0], kv[1]);
+  });
+
+  if(_.every(results, parsers.isSuccess)) {
+    const namedArgs = _(results)
+    .takeWhile(r => typeof r.argument?.name !== 'undefined')
+    .map(r => [r.argument.name, r.success])
+    .fromPairs()
+    .value();
+    return parsers.success({
+      args: _.map(results, "success"),
+      namedArgs,
+      unnamedArgs: _(results).drop(_.size(namedArgs)).map("success").value(),
     });
-
-    if(_.every(results, parsers.isSuccess)) {
-      return parsers.success(_.map(results, "success"));
-    } else {
-      return parsers.error(results);
-    }
   } else {
-    return parsers.error([parsers.error("Too many arguments: " + _.drop(providedArguments, args.length).join(", "))]);
+    return parsers.error(results);
   }
 };
 
