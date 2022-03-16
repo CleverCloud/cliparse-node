@@ -105,7 +105,7 @@ var myCmd = cliparse.command('cmd', {
     cliparse.option("my-option", {
       "aliases": ["m"],
       "metavar": "VALUE",
-      "complete": function() {return cliparse.autocomplete.words(["test"]);}
+      "complete": function() {return cliparse.autocomplete.words(["test"]);}
     })
   ]
 });

@@ -14,8 +14,8 @@ var cli = module.exports = {};
 
 cli.cli = function(options, cb) {
   options.topLevel = true;
-  options.version = typeof options.version !== 'undefined' ? options.version : null;
-  options.helpCommand = typeof options.helpCommand !== 'undefined' ? options.helpCommand : true;
+  options.version = options.version ?? null;
+  options.helpCommand = options.helpCommand ?? true;
   options.options = [ option.helpOption, option.versionOption ].concat(options.options || []);
 
   if(options.helpCommand) {
@@ -129,7 +129,7 @@ cli.cleanArgv = function(argv) {
 };
 
 cli.parse = function(cliApp, argv) {
-  argv = (typeof argv === "undefined") ? process.argv : argv;
+  argv = argv ?? process.argv;
 
   var flagNames = command.getFlagNames(cliApp);
   var optionNames = command.getOptionNames(cliApp);
