@@ -81,9 +81,11 @@ cli.execute = function(cliApp, args, options) {
 
   if(parsers.isError(result)) {
     cli.displayErrors(result.error, cliApp, args);
+    process.exit(1);
   } else {
     if(!_.last(result.context).action) {
       cli.displayUsage(cliApp, args);
+      process.exit(1);
     } else {
       _.last(result.context).action(result.success);
     }
