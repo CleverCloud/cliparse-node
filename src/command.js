@@ -16,6 +16,7 @@ command.command = function(name, options, cb) {
   options.description = options.description || "";
   options.args = options.args || [];
   options.options = options.options || [];
+  options.privateOptions = options.privateOptions || [];
   options.commands = options.commands || [];
   options.action = typeof cb !== 'undefined' ? cb : null;
   return options;
@@ -29,7 +30,7 @@ command.autocompleteFinal = function(cmd, argsLeft, argv, words, index, parentOp
   var availArg = autocomplete.empty;
   var availCommands = autocomplete.empty;
 
-  var allOptions = parentOptions.concat(cmd.options);
+  var allOptions = parentOptions.concat(cmd.options).concat(cmd.privateOptions);
 
   if(typeof currentWord === 'string' && currentWord.slice(0, 1) === '-') {
     // Complete option name
@@ -78,7 +79,7 @@ command.autocomplete = function(cmd, argsLeft, argv, words, index, parentOptions
 command.parseFinal = function(cmd, parentOptions, givenArgs, givenOpts) {
   var result;
   var parsedArguments = argument.parseList(cmd.args, givenArgs);
-  var parsedOptions = option.parseObject(cmd.options.concat(parentOptions), givenOpts);
+  var parsedOptions = option.parseObject(cmd.options.concat(cmd.privateOptions).concat(parentOptions), givenOpts);
 
   if(parsers.isSuccess(parsedArguments) && parsers.isSuccess(parsedOptions)) {
     result = parsers.success(_.assign(parsedArguments.success, {
@@ -116,22 +117,26 @@ command.singleLineHelp = function(cmd) {
 };
 
 command.usage = function(context) {
-  var cmd = _.last(context);
-  var elems = _(context).map(function(cmd) {
-    var required = _.filter(cmd.options, function(opt) { return opt.required; });
-    return [ cmd.name ].concat(_.map(required, option.usage));
-  }).flatten();
-  var args = _.map(cmd.args, argument.usage);
+  const cmd = _.last(context);
 
-  return elems.concat(args).join(' ');
+  const requiredOptions = _(context).map(function(cmd) { return cmd.options })
+    .flatten()
+    .concat(cmd.privateOptions)
+    .filter((option) => option.required);
+
+  return [
+    cmd.name,
+    requiredOptions.map(option.usage),
+    cmd.args.map(argument.usage),
+  ].join(' ');
 };
 
 command.help = function(context) {
-  var options = _.flatten(_.map(context, function(cmd) { return cmd.options; }));
+  var cmd = _.last(context);
 
+  var options = _.flatten(_.map(context, function(cmd) { return cmd.options; })).concat(cmd.privateOptions);
   var usage = "Usage: " + command.usage(context);
 
-  var cmd = _.last(context);
   var argumentHelp = _.map(cmd.args, argument.help);
   var commandsList = _.map(cmd.commands, command.singleLineHelp);
   var optionsList = _.map(options, option.help);
@@ -191,7 +196,7 @@ function getCommandsOfCommand(command) {
 
 command.getFlagNames = function(cmd) {
   return _(getCommandsOfCommand(cmd))
-    .flatMap('options')
+    .flatMap((cmd) => [...cmd.options, ...cmd.privateOptions])
     .reject(function(opt) { return opt.expects_value; })
     .flatMap('names')
     .uniq()
@@ -200,7 +205,7 @@ command.getFlagNames = function(cmd) {
 
 command.getOptionNames = function (cmd) {
   return _(getCommandsOfCommand(cmd))
-    .flatMap('options')
+    .flatMap((cmd) => [...cmd.options, ...cmd.privateOptions])
     .filter(function(opt) { return opt.expects_value; })
     .flatMap('names')
     .uniq()

@@ -70,3 +70,21 @@ test('carry top-level options to subcommands', function(t) {
     t.same(r.success, { args: [], namedArgs: {}, unnamedArgs: [], options: { test: true }}, 'correct subcommand parse');
 
 });
+
+test('do not carry top-level private options to subcommands', function(t) {
+  t.plan(4);
+  var topCommand = cliparse.command('top', {
+    privateOptions: [ cliparse.flag("test") ],
+    commands: [
+      cliparse.command('nested', {})
+    ]
+  });
+
+  var r = command.parse(topCommand, [], ['nested'], { test: true });
+  console.log(r.error);
+  t.equal(r.success, undefined, 'parse must fail on unknown options');
+  t.equal(r.context.length, 2, 'subcommand parse');
+  t.equal(_.last(r.context).name, 'nested', 'correct subcommand parse');
+  t.same(r.error, { args: [], options: [ { error: 'Unknown option: test' } ] }, 'correct subcommand parse');
+
+});

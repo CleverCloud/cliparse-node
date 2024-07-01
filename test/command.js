@@ -27,6 +27,18 @@ test('command with one flag', function(t) {
     t.same(r2.success, { options: { test: false }, args: [], namedArgs: {}, unnamedArgs: [] }, 'option not there');
 });
 
+test('command with one private flag', function(t) {
+  t.plan(2);
+  var option = cliparse.flag('test');
+  var cmd = cliparse.command( 'name', { privateOptions: [option] });
+
+  var r1 = command.parse(cmd, [], [], { test: true });
+  var r2 = command.parse(cmd, [], [], {});
+
+  t.same(r1.success, { options: { test: true }, args: [], namedArgs: {}, unnamedArgs: [] }, 'option present');
+  t.same(r2.success, { options: { test: false }, args: [], namedArgs: {}, unnamedArgs: [] }, 'option not there');
+});
+
 test('command with a required option without default', function(t) {
     t.plan(2);
     var option = cliparse.flag('test', { required: true });
@@ -37,6 +49,18 @@ test('command with a required option without default', function(t) {
 
     t.same(r1.success, { options: { test: true }, args: [], namedArgs: {}, unnamedArgs: [] }, 'option present');
     t.same(r2.success, undefined, 'option not there');
+});
+
+test('command with a required private option without default', function(t) {
+  t.plan(2);
+  var option = cliparse.flag('test', { required: true });
+  var cmd = cliparse.command( 'name', { privateOptions: [option] });
+
+  var r1 = command.parse(cmd, [], [], { test: true });
+  var r2 = command.parse(cmd, [], [], {});
+
+  t.same(r1.success, { options: { test: true }, args: [], namedArgs: {}, unnamedArgs: [] }, 'option present');
+  t.same(r2.success, undefined, 'option not there');
 });
 
 test('command with arguments', function(t) {

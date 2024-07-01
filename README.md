@@ -298,6 +298,8 @@ Where `name` is the name of the command , and `opts` can contain
  - `args`: array of arguments (constructed with `argument`). Default value: `[]`
  - `options`: array of options (constructed with `option`). Default value:
    `[]`
+- `privateOptions`: array of options that will not be inherited in sub commands. Default value:
+   `[]`
  - `commands`: array of subcommands (constructed with `command`). Default
    value: `[]`
 
