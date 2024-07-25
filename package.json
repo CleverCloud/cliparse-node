@@ -4,7 +4,6 @@
   "description": "Declarative CLI parsing for node apps",
   "main": "src/cliparse.js",
   "dependencies": {
-    "bluebird": "^3.7.2",
     "lodash": "^4.17.21",
     "minimist": "^1.2.5"
   },

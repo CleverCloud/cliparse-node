@@ -1,6 +1,5 @@
 var _ = require("lodash");
 var minimist = require("minimist");
-var Promise = require("bluebird").Promise;
 
 var argument = require("./argument");
 var autocomplete = require("./autocomplete");
