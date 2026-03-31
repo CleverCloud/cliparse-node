@@ -161,6 +161,8 @@ cli.parse = function(cliApp, argv) {
     console.log(autocompleteScript.bashScript(options["bash-autocomplete-script"]));
   } else if(options["zsh-autocomplete-script"]) {
     console.log(autocompleteScript.bashScript(options["zsh-autocomplete-script"], true));
+  } else if(options["fish-autocomplete-script"]) {
+    console.log(autocompleteScript.fishScript(options["fish-autocomplete-script"]));
   } else if(options["autocomplete-words"] && options["autocomplete-index"]) {
     cli.autocomplete(cliApp, options["autocomplete-words"], options["autocomplete-index"], flagNames, optionNames);
   } else {
