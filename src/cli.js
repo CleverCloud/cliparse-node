@@ -120,6 +120,95 @@ cli.autocomplete = function(cliApp, words, index, flagNames, optionNames) {
   }).then(console.log);
 };
 
+
+cli.isKnownArgName = function(name, optionNames, flagNames) {
+  return _.includes(optionNames, name) || _.includes(flagNames, name);
+};
+
+// Rewrites argv so minimist does not eat values that start with "-".
+// 1) For known options that take a value, bind "--opt -value" as "--opt=-value".
+// 2) Insert "--" before unrecognized hyphen tokens so they stay positional.
+cli.normalizeHyphenValues = function(argv, optionNames, flagNames) {
+  var result = [];
+  var i = 0;
+  var endOfOptions = false;
+
+  while (i < argv.length) {
+    var arg = argv[i];
+
+    if (endOfOptions) {
+      result.push(arg);
+      i += 1;
+      continue;
+    }
+
+    if (arg === '--') {
+      endOfOptions = true;
+      result.push(arg);
+      i += 1;
+      continue;
+    }
+
+    var longMatch = typeof arg === 'string' ? arg.match(/^--([^=]+)$/) : null;
+    var shortMatch = typeof arg === 'string' ? arg.match(/^-([^=-])$/) : null;
+    var optName = longMatch ? longMatch[1] : (shortMatch ? shortMatch[1] : null);
+    var isValueOption = optName && _.includes(optionNames, optName);
+
+    if (isValueOption && i + 1 < argv.length) {
+      var next = argv[i + 1];
+      if (typeof next === 'string' && next.charAt(0) === '-' && next !== '-' && next.indexOf('=') === -1) {
+        var nextLong = next.match(/^--([^=]+)$/);
+        var nextShort = next.match(/^-([^=-])$/);
+        var nextName = nextLong ? nextLong[1] : (nextShort ? nextShort[1] : null);
+        var nextIsKnownAlone = nextName && cli.isKnownArgName(nextName, optionNames, flagNames);
+        // Combined short clusters like -abcxyz are values, not known flags.
+        var nextIsKnownCluster = false;
+        if (!nextLong && !nextShort && /^-[^=-]/.test(next)) {
+          var chars = next.slice(1).split('');
+          nextIsKnownCluster = chars.length > 0 && _.every(chars, function(c) {
+            return _.includes(flagNames, c);
+          });
+        }
+
+        if (!nextIsKnownAlone && !nextIsKnownCluster) {
+          result.push(arg + '=' + next);
+          i += 2;
+          continue;
+        }
+      }
+    }
+
+    var looksLikeOption = typeof arg === 'string' && arg.charAt(0) === '-' && arg !== '-';
+    var isEqualsForm = typeof arg === 'string' && arg.indexOf('--') === 0 && arg.indexOf('=') !== -1;
+    var equalsName = isEqualsForm ? arg.slice(2, arg.indexOf('=')) : null;
+    var knownEquals = equalsName && cli.isKnownArgName(equalsName, optionNames, flagNames);
+    var knownLone = false;
+    if (longMatch) {
+      knownLone = cli.isKnownArgName(longMatch[1], optionNames, flagNames);
+    } else if (shortMatch) {
+      knownLone = cli.isKnownArgName(shortMatch[1], optionNames, flagNames);
+    } else if (typeof arg === 'string' && /^-[^=-]/.test(arg) && arg.indexOf('--') !== 0) {
+      var cluster = arg.slice(1).split('');
+      knownLone = cluster.length > 0 && _.every(cluster, function(c) {
+        return _.includes(flagNames, c);
+      });
+    }
+
+    if (looksLikeOption && !knownEquals && !knownLone && !isEqualsForm) {
+      result.push('--');
+      endOfOptions = true;
+      result.push(arg);
+      i += 1;
+      continue;
+    }
+
+    result.push(arg);
+    i += 1;
+  }
+
+  return result;
+};
+
 cli.cleanArgv = function(argv) {
   // check the command is launched via the node interpreter (+ ensure windows compat)
   if (argv[0].match(/node/)) {
@@ -140,6 +229,7 @@ cli.parse = function(cliApp, argv) {
     boolean: flagNames // Declare flags as not expecting values
   };
 
+  argv = cli.normalizeHyphenValues(argv, optionNames, flagNames);
   var cliValues = minimist(argv, opts);
   var optionsWithFlagDefaults = _.omit(cliValues, "_");
 
